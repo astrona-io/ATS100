@@ -1,0 +1,51 @@
+# Find And Restart The Broken Harbor Components
+# Astrona graded lab. Schema: internal/config.LabConfig.
+
+metadata:
+  name: "ats-100-lab-010-01"
+  docs:
+    guide: "solution.md"
+    solution: "solution.md"
+    question: "question.md"
+    examQuestion: "question.md"
+    prerequisites: "prerequisites.md"
+
+bootstrap:
+  init:
+    - name: "install-harbor"
+      description: "Installs Helm 3.22.1, Harbor 2.15.4 (chart 1.19.4) and the workstation pod"
+      type: "file"
+      source: "bootstrap/01-install-harbor.sh"
+    - name: "ats-100-lab-010-01-setup"
+      description: "Creates the starting state the task works from"
+      type: "file"
+      source: "bootstrap/02-seed-state.sh"
+
+testing:
+  init:
+    - name: "wait-for-harbor"
+      description: "Waits until Harbor answers from the workstation"
+      type: "file"
+      source: "testing/wait-for-harbor.sh"
+    - name: "reference-solution"
+      description: "The remediation a correct learner performs; used by `astrona test`"
+      type: "file"
+      source: "solution/apply.sh"
+
+validation:
+  scripts:
+    - name: "validate-all-components-healthy"
+      description: "Confirms /api/v2.0/health reports every component healthy"
+      type: "file"
+      source: "validation/validate-all-components-healthy.sh"
+    - name: "validate-push-works"
+      description: "Confirms an OCI artifact can be pushed to the project inventory"
+      type: "file"
+      source: "validation/validate-push-works.sh"
+    - name: "validate-no-reinstall"
+      description: "Confirms the Helm release was not upgraded or reinstalled"
+      type: "file"
+      source: "validation/validate-no-reinstall.sh"
+
+teardown:
+  keepCluster: false

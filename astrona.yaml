@@ -1,0 +1,265 @@
+# Course manifest for ATS100 - Architecture, Installation & Harbor CLI Basics (Harbor).
+#
+# One entry per section under `modules:`. Each section lists, in order: its
+# README, then for each module the landing page (course.md), its parts
+# (course-0N-*.md), and right after the part a lab tests, the lab's
+# question.md reading and the `type: lab` entry. The module's summary page
+# comes last. The section capstone closes the section. Playgrounds are not
+# listed: the landing page's playground marker shows them. solution.md is
+# never listed.
+#
+# Every `path:` is relative to this file.
+
+training:
+  id: ATS100
+  title: "Harbor: Architecture, Installation & Harbor CLI Basics"
+  maturity: draft
+  description: >
+    Training material covering the Architecture, Installation & Harbor CLI
+    Basics domain of the Harbor training path: the Harbor components and what
+    each one does, OCI artifacts such as images and Helm charts, installing
+    Harbor on Kubernetes with the harbor-helm chart and TLS, the Docker
+    Compose installers, and the harbor command-line tool with its
+    credentials and contexts. Each module pairs a layered reader with an
+    ungraded hands-on playground and a graded practice lab. Each section
+    closes with an integration capstone.
+    Written for Harbor 2.15.4 and the Harbor CLI v0.0.27.
+
+  certification:
+    name: Harbor
+    code: HARBOR
+    provider: Astrona
+    domain: Architecture, Installation & Harbor CLI Basics
+    weight: 10
+
+modules:
+
+  - id: module-intro
+    title: "Introduction"
+    description: >
+      Start here. What this course trains you to do, how it is laid out, how
+      to get your machine ready with the astrona command-line tool, how the
+      content is written and checked, who maintains it, and how to report a
+      mistake.
+
+    content:
+      - type: reading
+        title: Introduction
+        path: sections/intro/README.md
+      - type: reading
+        title: "Welcome To The Course"
+        path: sections/intro/course-01-welcome.md
+      - type: reading
+        title: "Get Your Machine Ready"
+        path: sections/intro/course-02-get-your-machine-ready.md
+      - type: reading
+        title: "How This Course Is Made"
+        path: sections/intro/course-03-how-this-course-is-made.md
+
+  - id: module-010
+    title: "Harbor Architecture And OCI Artifacts"
+    description: >
+      The components Harbor runs and what each one does, how a push travels
+      from the client through the proxy and the token service to the
+      registry, how to check Harbor's health from its API, and the OCI
+      artifacts Harbor stores: images, Helm charts and plain files.
+
+    content:
+      - type: reading
+        title: Section Overview
+        path: sections/section-010/README.md
+
+      - type: reading
+        title: "Find Your Way Around A Running Harbor"
+        path: sections/section-010/module-01/course.md
+      - type: reading
+        title: "The Harbor Components And What They Do"
+        path: sections/section-010/module-01/course-01-the-harbor-components.md
+      - type: reading
+        title: "Following A Push Through Harbor"
+        path: sections/section-010/module-01/course-02-following-a-push.md
+      - type: reading
+        title: Question
+        path: sections/section-010/module-01/labs/lab-01/question.md
+      - type: lab
+        title: "Find And Restart The Broken Harbor Components Lab"
+        path: sections/section-010/module-01/labs/lab-01
+        difficulty: beginner
+        estimated_duration: 15m
+        topic: architecture
+        task_kind: troubleshooting
+        tags: [health, harbor-api, registry, jobservice, core, regctl]
+        learning_goals:
+          - Read which Harbor components are unhealthy from the health API
+          - Bring the stopped components back without reinstalling Harbor
+          - Prove the fix with a healthy report and an image push
+        resources:
+          - name: "Harbor installation and configuration"
+            url: https://goharbor.io/docs/2.15.0/install-config/
+          - name: "Deploying Harbor with high availability via Helm"
+            url: https://goharbor.io/docs/2.15.0/install-config/harbor-ha-helm/
+      - type: reading
+        title: "Images, Helm Charts And Other OCI Artifacts"
+        path: sections/section-010/module-01/course-03-oci-artifacts.md
+      - type: reading
+        title: Summary
+        path: sections/section-010/module-01/course-04-summary.md
+
+      - type: reading
+        title: Question
+        path: sections/section-010/capstone/labs/lab-01/question.md
+      - type: lab
+        title: "Make Harbor Store Images And Charts Again Capstone"
+        path: sections/section-010/capstone/labs/lab-01
+        difficulty: intermediate
+        estimated_duration: 30m
+        topic: artifacts
+        task_kind: troubleshooting
+        tags: [redis, trivy, health, oci-artifacts, helm-chart, digest, regctl]
+        learning_goals:
+          - Find two stopped components from the health API and the cluster
+          - Copy an image and a Helm chart into Harbor as OCI artifacts
+          - Prove each copy by digest against its source
+        resources:
+          - name: "Working with projects"
+            url: https://goharbor.io/docs/2.15.0/working-with-projects/
+          - name: "Managing Helm charts"
+            url: https://goharbor.io/docs/2.15.0/working-with-projects/working-with-images/managing-helm-charts/
+
+  - id: module-020
+    title: "Installing Harbor With Helm And TLS"
+    description: >
+      Installing Harbor on Kubernetes with the harbor-helm chart: how it is
+      exposed, why externalURL must match the address clients use, how the
+      TLS certificate is chosen and trusted, and how the Docker Compose
+      installers configure the same things with harbor.yml.
+
+    content:
+      - type: reading
+        title: Section Overview
+        path: sections/section-020/README.md
+
+      - type: reading
+        title: "Install And Configure Harbor With harbor-helm"
+        path: sections/section-020/module-01/course.md
+      - type: reading
+        title: "The harbor-helm Values That Matter"
+        path: sections/section-020/module-01/course-01-harbor-helm-values.md
+      - type: reading
+        title: Question
+        path: sections/section-020/module-01/labs/lab-01/question.md
+      - type: lab
+        title: "Fix The External URL Of A Helm Install Lab"
+        path: sections/section-020/module-01/labs/lab-01
+        difficulty: intermediate
+        estimated_duration: 20m
+        topic: installation
+        task_kind: troubleshooting
+        tags: [harbor-helm, values-yaml, external-url, core, regctl]
+        learning_goals:
+          - Find why pushes fail at the token step from the registry's answer
+          - Correct externalURL with helm upgrade without turning TLS off
+          - Prove the fix with an image push from the workstation
+        resources:
+          - name: "Deploying Harbor with high availability via Helm"
+            url: https://goharbor.io/docs/2.15.0/install-config/harbor-ha-helm/
+          - name: "Harbor installation and configuration"
+            url: https://goharbor.io/docs/2.15.0/install-config/
+      - type: reading
+        title: "TLS Certificates And Trust"
+        path: sections/section-020/module-01/course-02-tls-certificates-and-trust.md
+      - type: reading
+        title: "The Docker Compose Installers And harbor.yml"
+        path: sections/section-020/module-01/course-03-docker-compose-installers.md
+      - type: reading
+        title: Summary
+        path: sections/section-020/module-01/course-04-summary.md
+
+      - type: reading
+        title: Question
+        path: sections/section-020/capstone/labs/lab-01/question.md
+      - type: lab
+        title: "Serve Harbor With Your Own Certificate Capstone"
+        path: sections/section-020/capstone/labs/lab-01
+        difficulty: advanced
+        estimated_duration: 35m
+        topic: tls
+        task_kind: troubleshooting
+        tags: [tls-certificate, ca-trust, harbor-helm, values-yaml, nginx]
+        learning_goals:
+          - Issue a certificate for the right host name from the lab certificate authority
+          - Make Harbor serve it from a Secret and make the workstation trust its CA
+          - Prove the result with verified HTTPS requests and an image push
+        resources:
+          - name: "Configure HTTPS access to Harbor"
+            url: https://goharbor.io/docs/2.15.0/install-config/configure-https/
+          - name: "Deploying Harbor with high availability via Helm"
+            url: https://goharbor.io/docs/2.15.0/install-config/harbor-ha-helm/
+
+  - id: module-030
+    title: "The Harbor Command-Line Tool"
+    description: >
+      The harbor command-line tool: signing in, where it keeps credentials and
+      how it encrypts passwords, working with several contexts, and the
+      everyday commands that list projects, repositories and artifacts in
+      table, JSON, YAML or CSV form.
+
+    content:
+      - type: reading
+        title: Section Overview
+        path: sections/section-030/README.md
+
+      - type: reading
+        title: "Work With Harbor From The Command Line"
+        path: sections/section-030/module-01/course.md
+      - type: reading
+        title: "Signing In And Where The CLI Keeps Credentials"
+        path: sections/section-030/module-01/course-01-signing-in.md
+      - type: reading
+        title: "Contexts For More Than One Server Or User"
+        path: sections/section-030/module-01/course-02-contexts.md
+      - type: reading
+        title: Question
+        path: sections/section-030/module-01/labs/lab-01/question.md
+      - type: lab
+        title: "Point The Harbor CLI At The Right Server Lab"
+        path: sections/section-030/module-01/labs/lab-01
+        difficulty: beginner
+        estimated_duration: 15m
+        topic: cli
+        task_kind: troubleshooting
+        tags: [harbor-cli, cli-login, cli-context, cli-config]
+        learning_goals:
+          - Read which context the harbor CLI uses and which server it points at
+          - Switch to the right context and renew its stale password
+          - Prove the fix by listing projects as the developer user
+        resources:
+          - name: "Harbor CLI documentation"
+            url: https://goharbor.io/cli-docs/
+      - type: reading
+        title: "Everyday Commands And Output Formats"
+        path: sections/section-030/module-01/course-03-everyday-commands.md
+      - type: reading
+        title: Summary
+        path: sections/section-030/module-01/course-04-summary.md
+
+      - type: reading
+        title: Question
+        path: sections/section-030/capstone/labs/lab-01/question.md
+      - type: lab
+        title: "Build A Repository Report With The Harbor CLI Capstone"
+        path: sections/section-030/capstone/labs/lab-01
+        difficulty: intermediate
+        estimated_duration: 30m
+        topic: cli
+        task_kind: build
+        tags: [harbor-cli, cli-context, cli-login, oci-artifacts, digest]
+        learning_goals:
+          - Sign the CLI in to Harbor as a read-only user in its own context
+          - Turn the CLI's JSON output into a report of every artifact and its digest
+          - Prove the report matches what Harbor stores
+        resources:
+          - name: "Harbor CLI documentation"
+            url: https://goharbor.io/cli-docs/
+          - name: "Working with projects"
+            url: https://goharbor.io/docs/2.15.0/working-with-projects/

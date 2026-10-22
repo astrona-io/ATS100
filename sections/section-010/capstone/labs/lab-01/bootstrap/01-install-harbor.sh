@@ -1,0 +1,86 @@
+#!/usr/bin/env bash
+# Installs Harbor and the workstation for `ats-100-capstone-010`.
+#
+# Lab bootstrap: this prepares the environment ONLY. It never creates the
+# objects the task asks for. Same steps as the module playground:
+#   1. puts Helm (pinned) on the PATH,
+#   2. makes harbor.localtest.me resolve to the Harbor Service inside the cluster,
+#   3. installs Harbor 2.15.4 with the harbor-helm chart 1.19.4,
+#   4. starts the workstation pod with the client tools and Harbor's CA trusted.
+set -euo pipefail
+
+HELM_VERSION="3.22.1"
+HARBOR_CHART_VERSION="1.19.4"
+HARBOR_HOST="harbor.localtest.me"
+
+BIN_DIR="/usr/local/bin"
+[ -w "$BIN_DIR" ] || BIN_DIR="$HOME/.local/bin"
+mkdir -p "$BIN_DIR"
+export PATH="$BIN_DIR:$PATH"
+
+# Pin Helm rather than accepting whatever is on the machine: the Harbor
+# documentation is written for Helm 3.
+have_version=""
+command -v helm >/dev/null 2>&1 && \
+  have_version=$(helm version --template '{{.Version}}' 2>/dev/null | sed 's/^v//')
+if [ "$have_version" != "$HELM_VERSION" ]; then
+  OS="$(uname -s | tr '[:upper:]' '[:lower:]')"
+  ARCH="$(uname -m)"
+  case "$ARCH" in x86_64) ARCH=amd64 ;; aarch64|arm64) ARCH=arm64 ;; esac
+  WORK="$(mktemp -d)"
+  trap 'rm -rf "$WORK"' EXIT
+  echo "[lab] Downloading Helm ${HELM_VERSION} (${OS}/${ARCH})..."
+  curl -fsSL "https://get.helm.sh/helm-v${HELM_VERSION}-${OS}-${ARCH}.tar.gz" | tar -xz -C "$WORK"
+  install -m 0755 "$WORK/${OS}-${ARCH}/helm" "$BIN_DIR/helm"
+fi
+helm version --short
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+MANIFEST_DIR=""
+for candidate in "$SCRIPT_DIR/../manifests" "./manifests" "$SCRIPT_DIR/manifests"; do
+  [ -d "$candidate" ] && { MANIFEST_DIR="$candidate"; break; }
+done
+
+# One address for the reader's machine and the cluster: harbor.localtest.me
+# resolves to 127.0.0.1 on the machine (reached through a port-forward), and
+# this CoreDNS block sends the same name to the Harbor Service in the cluster.
+# The answer is rewritten back to the asked name: Go programs ignore DNS
+# answers whose name differs from the question.
+if ! kubectl -n kube-system get configmap coredns -o jsonpath='{.data.Corefile}' | grep -q "$HARBOR_HOST"; then
+  echo "[lab] Adding the CoreDNS rewrite for ${HARBOR_HOST}..."
+  COREFILE="$(kubectl -n kube-system get configmap coredns -o jsonpath='{.data.Corefile}' \
+    | awk '/^[[:space:]]*kubernetes / && !done {
+        print "    rewrite stop {"
+        print "        name regex harbor\\.localtest\\.me harbor.harbor.svc.cluster.local"
+        print "        answer name harbor\\.harbor\\.svc\\.cluster\\.local harbor.localtest.me"
+        print "    }"
+        done=1
+      } {print}')"
+  kubectl -n kube-system create configmap coredns --from-literal=Corefile="$COREFILE" \
+    --dry-run=client -o yaml | kubectl apply -f -
+  kubectl -n kube-system rollout restart deployment/coredns
+  kubectl -n kube-system rollout status deployment/coredns --timeout=120s
+fi
+
+echo "[lab] Installing Harbor (chart ${HARBOR_CHART_VERSION}); this takes several minutes..."
+helm repo add harbor https://helm.goharbor.io >/dev/null 2>&1 || true
+helm repo update harbor >/dev/null
+helm upgrade --install harbor harbor/harbor --version "$HARBOR_CHART_VERSION" \
+  --namespace harbor --create-namespace \
+  --values "$MANIFEST_DIR/harbor-values.yaml" \
+  --wait --timeout 20m
+
+# lab-start.yaml is also listed under bootstrap.manifests in config.yaml, so it
+# may already be applied. kubectl apply is idempotent.
+echo "[lab] Starting the workstation pod..."
+kubectl apply -f "$MANIFEST_DIR/lab-start.yaml"
+kubectl -n workstation rollout status deployment/workstation --timeout=600s
+for _ in $(seq 1 60); do
+  kubectl -n workstation exec deploy/workstation -- test -s /usr/local/share/ca-certificates/harbor-ca.crt 2>/dev/null && break
+  sleep 5
+done
+
+echo "[lab] Ready."
+kubectl -n harbor get pods
+echo "[lab] Run tools in the workstation: kubectl -n workstation exec -it deploy/workstation -- sh"
+echo "[lab] Harbor web portal: kubectl -n harbor port-forward svc/harbor 8443:8443, then https://harbor.localtest.me:8443"

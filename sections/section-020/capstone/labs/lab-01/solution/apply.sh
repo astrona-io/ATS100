@@ -1,0 +1,98 @@
+#!/usr/bin/env bash
+# Reference remediation, applied only by `astrona test` (the `testing:` block).
+# `astrona run` never runs this. Taken from solution.md - if one changes, change the other.
+set -euo pipefail
+
+export PATH="/usr/local/bin:$HOME/.local/bin:$PATH"
+HARBOR_URL="https://harbor.localtest.me:8443"
+HARBOR_HOST="harbor.localtest.me:8443"
+
+# Runs a command in the workstation pod, where the client tools live.
+ws() { kubectl -n workstation exec -i deploy/workstation -- "$@"; }
+
+# harbor_api METHOD PATH [JSON]: calls the Harbor REST API v2.0 as admin
+# (lab-only password) from the workstation pod.
+harbor_api() {
+  local method="$1" path="$2" body="${3:-}"
+  if [ -n "$body" ]; then
+    printf '%s' "$body" | ws curl -fsS -u admin:Harbor12345 -X "$method" \
+      -H 'Content-Type: application/json' --data-binary @- "$HARBOR_URL/api/v2.0$path"
+  else
+    ws curl -fsS -u admin:Harbor12345 -X "$method" "$HARBOR_URL/api/v2.0$path"
+  fi
+}
+
+# create_project NAME: creates a private project if it does not exist yet.
+create_project() {
+  local found
+  found="$(harbor_api GET "/projects?name=$1" 2>/dev/null || true)"
+  if ! printf '%s' "$found" | grep -Eq "\"name\": ?\"$1\""; then
+    harbor_api POST /projects "{\"project_name\":\"$1\",\"metadata\":{\"public\":\"false\"}}" >/dev/null
+  fi
+}
+
+# create_user NAME PASSWORD: creates a Harbor user if it does not exist yet.
+create_user() {
+  local found
+  found="$(harbor_api GET "/users/search?username=$1" 2>/dev/null || true)"
+  if ! printf '%s' "$found" | grep -Eq "\"username\": ?\"$1\""; then
+    harbor_api POST /users "{\"username\":\"$1\",\"email\":\"$1@example.com\",\"realname\":\"$1\",\"password\":\"$2\",\"comment\":\"lab user\"}" >/dev/null
+  fi
+}
+
+# add_member PROJECT USER ROLE_ID: 1 Project Admin, 2 Developer, 3 Guest, 4 Maintainer.
+add_member() {
+  harbor_api POST "/projects/$1/members" "{\"role_id\":$3,\"member_user\":{\"username\":\"$2\"}}" >/dev/null 2>&1 || true
+}
+
+# copy_to_harbor SOURCE TARGET: copies an image or chart into Harbor with regctl.
+copy_to_harbor() {
+  ws regctl registry login "$HARBOR_HOST" -u admin -p Harbor12345 >/dev/null
+  ws regctl image copy "$1" "$HARBOR_HOST/$2"
+}
+
+# record_baseline KEY VALUE: keeps a value the graders compare against later.
+record_baseline() {
+  kubectl -n harbor create configmap lab-baseline --dry-run=client -o yaml \
+    --from-literal="$1=$2" | kubectl apply -f - >/dev/null 2>&1 || true
+  kubectl -n harbor patch configmap lab-baseline --type merge -p "{\"data\":{\"$1\":\"$2\"}}" >/dev/null
+}
+
+helm_revision() { helm -n harbor history harbor -o json | jq -r '.[-1].revision'; }
+
+# unhealthy_components: prints the name of every component the health API
+# does not report as healthy (empty output means all healthy).
+unhealthy_components() {
+  ws sh -c "curl -fsS $HARBOR_URL/api/v2.0/health | jq -r '.components[] | select(.status != \"healthy\") | .name'"
+}
+
+# push_check REPOSITORY: pushes a small file as an OCI artifact; exit 0 on success.
+push_check() {
+  ws sh -c "echo graded > /tmp/check.txt && cd /tmp && oras login $HARBOR_HOST -u admin -p Harbor12345 >/dev/null 2>&1 && oras push $HARBOR_HOST/$1:grader check.txt:text/plain >/dev/null 2>&1"
+}
+
+WORK="$(mktemp -d)"
+kubectl -n harbor get secret lab-ca -o jsonpath='{.data.ca\.crt}' | base64 -d > "$WORK/ca.crt"
+kubectl -n harbor get secret lab-ca -o jsonpath='{.data.ca\.key}' | base64 -d > "$WORK/ca.key"
+ws sh -c 'apk add --no-cache openssl >/dev/null && mkdir -p /tmp/pki'
+ws sh -c 'cat > /tmp/pki/ca.crt' < "$WORK/ca.crt"
+ws sh -c 'cat > /tmp/pki/ca.key' < "$WORK/ca.key"
+ws sh -c 'cd /tmp/pki &&
+  openssl req -newkey rsa:2048 -nodes -subj "/CN=harbor.localtest.me" -keyout tls.key -out tls.csr 2>/dev/null &&
+  printf "subjectAltName=DNS:harbor.localtest.me\n" > san.ext &&
+  openssl x509 -req -in tls.csr -CA ca.crt -CAkey ca.key -CAcreateserial -days 90 -extfile san.ext -out tls.crt 2>/dev/null'
+ws cat /tmp/pki/tls.crt > "$WORK/tls.crt"
+ws cat /tmp/pki/tls.key > "$WORK/tls.key"
+kubectl -n harbor create secret generic harbor-tls --from-file=tls.crt="$WORK/tls.crt" \
+  --from-file=tls.key="$WORK/tls.key" --from-file=ca.crt="$WORK/ca.crt" \
+  --dry-run=client -o yaml | kubectl apply -f -
+rm -rf "$WORK"
+kubectl -n harbor rollout restart deployment/harbor-nginx deployment/harbor-core
+kubectl -n harbor rollout status deployment/harbor-nginx --timeout=300s
+kubectl -n harbor rollout status deployment/harbor-core --timeout=300s
+kubectl -n workstation rollout restart deployment/workstation
+kubectl -n workstation rollout status deployment/workstation --timeout=600s
+for _ in $(seq 1 60); do
+  ws curl -fsS "$HARBOR_URL/api/v2.0/ping" >/dev/null 2>&1 && break
+  sleep 5
+done

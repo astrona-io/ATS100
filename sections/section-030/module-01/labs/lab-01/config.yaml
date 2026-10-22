@@ -1,0 +1,51 @@
+# Point The Harbor CLI At The Right Server
+# Astrona graded lab. Schema: internal/config.LabConfig.
+
+metadata:
+  name: "ats-100-lab-030-01"
+  docs:
+    guide: "solution.md"
+    solution: "solution.md"
+    question: "question.md"
+    examQuestion: "question.md"
+    prerequisites: "prerequisites.md"
+
+bootstrap:
+  init:
+    - name: "install-harbor"
+      description: "Installs Helm 3.22.1, Harbor 2.15.4 (chart 1.19.4) and the workstation pod"
+      type: "file"
+      source: "bootstrap/01-install-harbor.sh"
+    - name: "ats-100-lab-030-01-setup"
+      description: "Creates the starting state the task works from"
+      type: "file"
+      source: "bootstrap/02-seed-state.sh"
+
+testing:
+  init:
+    - name: "wait-for-harbor"
+      description: "Waits until Harbor answers from the workstation"
+      type: "file"
+      source: "testing/wait-for-harbor.sh"
+    - name: "reference-solution"
+      description: "The remediation a correct learner performs; used by `astrona test`"
+      type: "file"
+      source: "solution/apply.sh"
+
+validation:
+  scripts:
+    - name: "validate-current-context"
+      description: "Confirms the current credential is inventory-dev at https://harbor.localtest.me:8443"
+      type: "file"
+      source: "validation/validate-current-context.sh"
+    - name: "validate-project-list"
+      description: "Confirms harbor project list works and shows the project inventory"
+      type: "file"
+      source: "validation/validate-project-list.sh"
+    - name: "validate-password-unchanged"
+      description: "Confirms the user's Harbor password was not changed to fit the CLI"
+      type: "file"
+      source: "validation/validate-password-unchanged.sh"
+
+teardown:
+  keepCluster: false

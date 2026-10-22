@@ -1,0 +1,55 @@
+# Make Harbor Store Images And Charts Again
+# Astrona graded lab. Schema: internal/config.LabConfig.
+
+metadata:
+  name: "ats-100-capstone-010"
+  docs:
+    guide: "solution.md"
+    solution: "solution.md"
+    question: "question.md"
+    examQuestion: "question.md"
+    prerequisites: "prerequisites.md"
+
+bootstrap:
+  init:
+    - name: "install-harbor"
+      description: "Installs Helm 3.22.1, Harbor 2.15.4 (chart 1.19.4) and the workstation pod"
+      type: "file"
+      source: "bootstrap/01-install-harbor.sh"
+    - name: "ats-100-capstone-010-setup"
+      description: "Creates the starting state the task works from"
+      type: "file"
+      source: "bootstrap/02-seed-state.sh"
+
+testing:
+  init:
+    - name: "wait-for-harbor"
+      description: "Waits until Harbor answers from the workstation"
+      type: "file"
+      source: "testing/wait-for-harbor.sh"
+    - name: "reference-solution"
+      description: "The remediation a correct learner performs; used by `astrona test`"
+      type: "file"
+      source: "solution/apply.sh"
+
+validation:
+  scripts:
+    - name: "validate-all-components-healthy"
+      description: "Confirms /api/v2.0/health reports every component healthy, trivy included"
+      type: "file"
+      source: "validation/validate-all-components-healthy.sh"
+    - name: "validate-image-copied"
+      description: "Confirms inventory/podinfo:6.15.0 has the same digest as the source image"
+      type: "file"
+      source: "validation/validate-image-copied.sh"
+    - name: "validate-chart-copied"
+      description: "Confirms inventory/charts/podinfo:6.15.0 is a Helm chart with the source digest"
+      type: "file"
+      source: "validation/validate-chart-copied.sh"
+    - name: "validate-no-reinstall"
+      description: "Confirms the Helm release was not upgraded or reinstalled"
+      type: "file"
+      source: "validation/validate-no-reinstall.sh"
+
+teardown:
+  keepCluster: false

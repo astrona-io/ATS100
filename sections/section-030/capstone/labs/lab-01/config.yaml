@@ -1,0 +1,51 @@
+# Build A Repository Report With The Harbor CLI
+# Astrona graded lab. Schema: internal/config.LabConfig.
+
+metadata:
+  name: "ats-100-capstone-030"
+  docs:
+    guide: "solution.md"
+    solution: "solution.md"
+    question: "question.md"
+    examQuestion: "question.md"
+    prerequisites: "prerequisites.md"
+
+bootstrap:
+  init:
+    - name: "install-harbor"
+      description: "Installs Helm 3.22.1, Harbor 2.15.4 (chart 1.19.4) and the workstation pod"
+      type: "file"
+      source: "bootstrap/01-install-harbor.sh"
+    - name: "ats-100-capstone-030-setup"
+      description: "Creates the starting state the task works from"
+      type: "file"
+      source: "bootstrap/02-seed-state.sh"
+
+testing:
+  init:
+    - name: "wait-for-harbor"
+      description: "Waits until Harbor answers from the workstation"
+      type: "file"
+      source: "testing/wait-for-harbor.sh"
+    - name: "reference-solution"
+      description: "The remediation a correct learner performs; used by `astrona test`"
+      type: "file"
+      source: "solution/apply.sh"
+
+validation:
+  scripts:
+    - name: "validate-reader-context"
+      description: "Confirms the current credential is inventory-reader at https://harbor.localtest.me:8443"
+      type: "file"
+      source: "validation/validate-reader-context.sh"
+    - name: "validate-report-matches-harbor"
+      description: "Confirms /root/inventory-report.json lists every tag in inventory with its digest"
+      type: "file"
+      source: "validation/validate-report-matches-harbor.sh"
+    - name: "validate-reader-cannot-push"
+      description: "Confirms inventory-reader stays a Guest, so the report was made with read-only rights"
+      type: "file"
+      source: "validation/validate-reader-cannot-push.sh"
+
+teardown:
+  keepCluster: false
