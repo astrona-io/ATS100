@@ -12,6 +12,7 @@ Sign in as the developer user:
 
 ```sh
 ws() { kubectl -n workstation exec -i deploy/workstation -- "$@"; }
+wst() { kubectl -n workstation exec -it deploy/workstation -- "$@"; }
 ws harbor login https://harbor.localtest.me:8443 --username inventory-dev \
   --password Inventory-dev-123 --context-name inventory-dev
 ```
@@ -19,8 +20,10 @@ ws harbor login https://harbor.localtest.me:8443 --username inventory-dev \
 The CLI prints a line saying the login succeeded for `inventory-dev` at the server. It may also print a warning that the system keyring is not available; that warning is explained below. Now run a command that needs the credential:
 
 ```sh
-ws harbor project list
+wst harbor project list
 ```
+
+The `harbor` CLI (version 0.0.27) draws lists and views as a table only on a terminal, so these commands run through `wst`, which adds `-t` (a terminal) to `kubectl exec`.
 
 The table lists the project `inventory`. The CLI read the saved credential, sent it to `core` with each API request, and `core` returned only the projects `inventory-dev` may see.
 

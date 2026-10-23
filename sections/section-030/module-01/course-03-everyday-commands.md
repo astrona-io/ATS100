@@ -12,11 +12,14 @@ Run both as the developer user:
 
 ```sh
 ws() { kubectl -n workstation exec -i deploy/workstation -- "$@"; }
+wst() { kubectl -n workstation exec -it deploy/workstation -- "$@"; }
 ws harbor login https://harbor.localtest.me:8443 --username inventory-dev \
   --password Inventory-dev-123 --context-name inventory-dev
-ws harbor health
-ws harbor info
+wst harbor health
+wst harbor info
 ```
+
+The `harbor` CLI (version 0.0.27) draws lists and views as a table only on a terminal, so these commands run through `wst`, which adds `-t` (a terminal) to `kubectl exec`.
 
 `harbor health` lists components such as `core`, `database`, `jobservice`, `registry` and `trivy`, each with its status. Run these two first when a script fails: they tell you whether the problem is the server or the request.
 
@@ -25,9 +28,9 @@ ws harbor info
 The content commands follow Harbor's own structure, from the outside in. A project holds repositories, and a repository holds artifacts with their tags:
 
 ```sh
-ws harbor project list
-ws harbor repo list inventory
-ws harbor artifact list inventory/podinfo
+wst harbor project list
+wst harbor repo list inventory
+wst harbor artifact list inventory/podinfo
 ```
 
 `harbor project list` shows `inventory` with its access level. `harbor repo list inventory` shows two repositories, `inventory/podinfo` and `inventory/charts/podinfo`, with their artifact counts. `harbor artifact list inventory/podinfo` shows two artifacts, tagged `6.14.1` and `6.15.0`, each with its digest, type, size and push time. Without an argument, `harbor artifact list` asks for the project and the repository interactively, which is useful at a terminal and useless in a script.

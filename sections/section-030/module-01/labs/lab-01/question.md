@@ -11,7 +11,7 @@ The developer `inventory-dev` uses the `harbor` CLI in the workstation pod. Afte
 Reproduce it:
 
 ```sh
-kubectl -n workstation exec -i deploy/workstation -- harbor project list
+kubectl -n workstation exec -it deploy/workstation -- harbor project list
 ```
 
 ## Your task

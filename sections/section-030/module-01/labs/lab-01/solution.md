@@ -8,9 +8,12 @@ The grader checks three things: the user and server of the current credential, a
 
 ```sh
 ws() { kubectl -n workstation exec -i deploy/workstation -- "$@"; }
-ws harbor context list
+wst() { kubectl -n workstation exec -it deploy/workstation -- "$@"; }
+wst harbor context list
 ws harbor context get credentials.serveraddress
 ```
+
+The `harbor` CLI (version 0.0.27) draws lists and views as a table only on a terminal, so these commands run through `wst`, which adds `-t` (a terminal) to `kubectl exec`.
 
 There are two contexts. The current one, `inventory-dev-old-server`, points at `https://harbor.example.com:8443`, a server that does not exist here, so every command fails with a connection error. The other context, `inventory-dev`, points at the right server.
 
@@ -18,7 +21,7 @@ There are two contexts. The current one, `inventory-dev-old-server`, points at `
 
 ```sh
 ws harbor context switch inventory-dev
-ws harbor project list
+wst harbor project list
 ```
 
 The server is right now, but the command fails with an authentication error from `core`: the context `inventory-dev` holds an old password.
@@ -37,7 +40,7 @@ ws harbor login https://harbor.localtest.me:8443 --username inventory-dev \
 ```sh
 ws harbor context get credentials.username
 ws harbor context get credentials.serveraddress
-ws harbor project list
+wst harbor project list
 ```
 
 The current credential is `inventory-dev` at `https://harbor.localtest.me:8443`, and the listing shows `inventory`. You can remove the stale context with `harbor context switch inventory-dev-old-server`, then `harbor logout --yes`, and switch back to `inventory-dev`; the grader does not require it.

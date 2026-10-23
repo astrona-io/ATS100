@@ -284,11 +284,15 @@ every command against `harbor <command> --help` of v0.0.27 on the first run.
 | `workstation` (namespace `workstation`) | `alpine:3.22` with `harbor`, `cosign`, `oras`, `regctl`, `curl` and `jq`, and Harbor's CA in the system trust store. Every Harbor command on a page runs here |
 | Project `inventory` | The example project. Repositories `inventory/podinfo` (copied from `ghcr.io/stefanprodan/podinfo:6.15.0`) and `inventory/charts/podinfo` |
 
-Pages run tools through a helper, defined once per page that needs it:
+Pages run tools through two helpers, each defined once per page that needs
+it (in the same first command block). `wst` is only for commands that print
+a table (see the next list):
 
 ```sh
 ws() { kubectl -n workstation exec -i deploy/workstation -- "$@"; }
+wst() { kubectl -n workstation exec -it deploy/workstation -- "$@"; }
 ws harbor --help
+wst harbor project list
 ```
 
 ### Environment facts the text must respect
@@ -303,8 +307,27 @@ ws harbor --help
   sign in (sign in once, then `harbor context switch`). `harbor project
   create` needs a name and `--storage-limit` (`-1` is no quota). `harbor
   project member create` needs `--username` and `--roleid` (`--role` is
-  ignored); group members cannot be added without the form, so use
-  `POST /api/v2.0/projects/<project>/members` with `member_group`.
+  ignored), and it adds 1 to the number (`pkg/api/member_handler.go`):
+  `--roleid 1` makes a Developer, `--roleid 2` a Guest. Pages say so and
+  check the role afterwards. Group members cannot be added without the
+  form, so use `POST /api/v2.0/projects/<project>/members` with
+  `member_group`. `harbor project member update` is unusable without a
+  terminal (a positional member opens a picker; `--member` sends the user ID
+  as the membership ID), so pages change roles with
+  `PUT /api/v2.0/projects/<project>/members/<membership id>`.
+  Without `-o json|yaml`, list and view commands (`project list|view`,
+  `project member list`, `quota list`, `context list`, `registry list|view`,
+  `replication executions|policies list`, `instance list`, `repo list`,
+  `artifact list`, `tag immutable list`, `project preheat policy|execution
+  list`, `info`, `health`, `config view`, and the other `pkg/views/*/list`
+  and `view` packages) print through a bubbletea program
+  (`tea.NewProgram(m).Run()`, then `os.Exit(1)` on error). bubbletea v1.3.10
+  opens `/dev/tty` when stdin is not a terminal, so without a terminal they
+  exit 1 (`could not open a new TTY`); `context list` instead prints nothing.
+  Pages run these through `wst` (`kubectl exec -it`) and say why in one
+  sentence. Keep `ws` for scripts, pipes, `$(...)`, `-o json|yaml`, `version`,
+  `context get`, `ldap search|ping` and create/update/delete messages; a table
+  command inside `ws sh -c` or a pipe needs `-o json`.
 - **Harbor images are amd64 only (seen on a live run, 2026-10-23).** On an
   arm64 machine (Apple silicon) every `goharbor/*` image runs under
   emulation. The bundled Valkey (Redis) crashes there with a segmentation

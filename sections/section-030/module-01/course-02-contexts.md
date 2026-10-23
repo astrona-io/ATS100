@@ -10,12 +10,15 @@ Each `harbor login` with a new `--context-name` adds a credential to the list an
 
 ```sh
 ws() { kubectl -n workstation exec -i deploy/workstation -- "$@"; }
+wst() { kubectl -n workstation exec -it deploy/workstation -- "$@"; }
 ws harbor login https://harbor.localtest.me:8443 --username inventory-dev \
   --password Inventory-dev-123 --context-name inventory-dev
 ws harbor login https://harbor.localtest.me:8443 --username inventory-reader \
   --password Inventory-read-123 --context-name inventory-reader
-ws harbor context list
+wst harbor context list
 ```
+
+The `harbor` CLI (version 0.0.27) draws lists and views as a table only on a terminal, so these commands run through `wst`, which adds `-t` (a terminal) to `kubectl exec`.
 
 `harbor context list` shows both contexts, `inventory-dev` and `inventory-reader`, and marks `inventory-reader` as the current one, because it was saved last.
 
@@ -38,7 +41,7 @@ Passwords change, and servers move. A context does not notice either; it keeps t
 ```sh
 ws harbor login https://harbor.localtest.me:8443 --username inventory-dev \
   --password Wrong-password-1 --context-name inventory-dev-stale --skip-verify-client
-ws harbor project list
+wst harbor project list
 ```
 
 The listing fails with an authentication error from `core`: the CLI sent the stale password of the current context, `inventory-dev-stale`. Two ways repair a stale context. The simplest is to run `harbor login` again with the same `--context-name` and the right password; the CLI updates the existing credential and encrypts the new password. The other is to switch to a context that still works. Do the first:
@@ -46,7 +49,7 @@ The listing fails with an authentication error from `core`: the CLI sent the sta
 ```sh
 ws harbor login https://harbor.localtest.me:8443 --username inventory-dev \
   --password Inventory-dev-123 --context-name inventory-dev-stale
-ws harbor project list
+wst harbor project list
 ```
 
 The listing works again. `harbor context update credentials.serveraddress <url>` changes a single field in place, which is handy when a server moves but the password stays the same.
@@ -58,7 +61,7 @@ Old contexts are a risk: they hold working passwords you forgot about. `harbor c
 ```sh
 ws harbor context switch inventory-dev-stale
 ws harbor logout --yes
-ws harbor context list
+wst harbor context list
 ```
 
 The list shows `inventory-dev` and `inventory-reader` again. After a logout, no context is current until you switch to one, so run `harbor context switch inventory-dev` before the next command.
