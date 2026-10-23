@@ -25,7 +25,7 @@ current_context() {
 ## Practice tasks
 
 - Sign in as all three users with names of your choice, then run `harbor project list` in each context and compare.
-- As `inventory-reader`, try `harbor project create test-project` and read the error. Then try it as `admin`.
+- As `inventory-reader`, try `harbor project create test-project --storage-limit -1` and read the error. Then try it as `admin`.
 - Save a context with a wrong password using `--skip-verify-client`, and find the first command that notices.
 - Point the CLI at a second configuration file with `HARBOR_CLI_CONFIG=/tmp/other.yaml harbor context list`, and explain why it is empty.
 - Build a one-line `jq` filter that prints every tag in `inventory/podinfo` with its push time.
