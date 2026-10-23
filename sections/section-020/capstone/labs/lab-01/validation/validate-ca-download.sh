@@ -67,8 +67,10 @@ copy_to_harbor() {
 
 # record_baseline KEY VALUE: keeps a value the graders compare against later.
 record_baseline() {
-  kubectl -n harbor create configmap lab-baseline --dry-run=client -o yaml \
-    --from-literal="$1=$2" | kubectl apply -f - >/dev/null 2>&1 || true
+  # Create the ConfigMap only once; applying a one-key ConfigMap would erase
+  # the values recorded before it.
+  kubectl -n harbor get configmap lab-baseline >/dev/null 2>&1 || \
+    kubectl -n harbor create configmap lab-baseline >/dev/null
   kubectl -n harbor patch configmap lab-baseline --type merge -p "{\"data\":{\"$1\":\"$2\"}}" >/dev/null
 }
 
