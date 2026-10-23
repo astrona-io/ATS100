@@ -23,7 +23,10 @@ harbor_api() {
 }
 
 for _ in $(seq 1 180); do
-  if ws curl -fsS "$HARBOR_URL/api/v2.0/ping" >/dev/null 2>&1; then
+  # The capstone starts with a certificate the workstation does not trust;
+  # that fault is the task. This author-only check needs only to know that
+  # Harbor answers, so it does not verify the certificate (-k).
+  if ws curl -fsSk "$HARBOR_URL/api/v2.0/ping" >/dev/null 2>&1; then
     exit 0
   fi
   sleep 5
