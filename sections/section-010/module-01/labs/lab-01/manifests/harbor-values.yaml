@@ -6,15 +6,20 @@ expose:
   type: clusterIP
   tls:
     enabled: true
-    certSource: auto
-    auto:
-      commonName: harbor.localtest.me
+    # The certificate and the lab CA come from the Secret harbor-tls, which
+    # the bootstrap creates once. certSource auto would generate a new CA on
+    # every helm upgrade, and every client would have to trust it again.
+    certSource: secret
+    secret:
+      secretName: harbor-tls
   clusterIP:
     name: harbor
     ports:
       httpPort: 8080
       httpsPort: 8443
 externalURL: https://harbor.localtest.me:8443
+# Lets core offer the lab CA at /api/v2.0/systeminfo/getcert.
+caSecretName: harbor-tls
 # Lab-only administrator password. A real installation sets its own.
 harborAdminPassword: Harbor12345
 # Lab environments are thrown away: no PersistentVolumeClaims.

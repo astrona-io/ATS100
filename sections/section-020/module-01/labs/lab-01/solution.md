@@ -33,15 +33,16 @@ expose:
   type: clusterIP
   tls:
     enabled: true
-    certSource: auto
-    auto:
-      commonName: harbor.localtest.me
+    certSource: secret
+    secret:
+      secretName: harbor-tls
   clusterIP:
     name: harbor
     ports:
       httpPort: 8080
       httpsPort: 8443
 externalURL: https://harbor.localtest.me:8443
+caSecretName: harbor-tls
 harborAdminPassword: Harbor12345
 persistence:
   enabled: false
@@ -49,7 +50,14 @@ trivy:
   enabled: true
 metrics:
   enabled: false
+redis:
+  internal:
+    image:
+      repository: docker.io/valkey/valkey
+      tag: 8.1.10-alpine
 ```
+
+The TLS lines keep the lab certificate from the Secret `harbor-tls`, so the upgrade does not change the certificate and the workstation still trusts it. The `redis` lines keep the multi-architecture Valkey image that replaces the bundled Redis.
 
 Apply it with an upgrade of the release:
 

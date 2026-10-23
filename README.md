@@ -62,8 +62,8 @@ external URL and the certificate. Section 030 ends with the `harbor` CLI.
 ## The lab environment
 
 Every playground and lab is a **kind** cluster with Harbor 2.15.4 installed by
-Helm 3.22.1 (`harbor-helm` 1.19.4, `expose.type: clusterIP`, chart-generated
-TLS certificate, no persistence) and a **workstation** pod (`alpine:3.22`) that
+Helm 3.22.1 (`harbor-helm` 1.19.4, `expose.type: clusterIP`, TLS certificate
+from a fixed lab CA in the Secret `harbor-tls`, no persistence) and a **workstation** pod (`alpine:3.22`) that
 carries the client tools (`harbor` v0.0.27, `cosign` 3.1.4, `oras` 1.3.5,
 `regctl` 0.11.7, `curl`, `jq`) and trusts Harbor's CA.
 

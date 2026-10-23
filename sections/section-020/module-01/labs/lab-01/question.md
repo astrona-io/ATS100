@@ -27,7 +27,7 @@ Harbor is the Helm release `harbor` in the namespace `harbor` (chart `harbor/har
 
 ## Constraints
 
-- Keep TLS on and keep the certificate the chart generated. Do not use any `--insecure` option.
+- Keep TLS on and keep the lab certificate from the Secret `harbor-tls`. Do not use any `--insecure` option.
 - Change the release with `helm upgrade`. Do not uninstall it.
 
 ## Done when

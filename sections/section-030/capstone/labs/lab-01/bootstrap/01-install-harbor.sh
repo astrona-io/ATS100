@@ -5,7 +5,8 @@
 # objects the task asks for. Same steps as the module playground:
 #   1. puts Helm (pinned) on the PATH,
 #   2. makes harbor.localtest.me resolve to the Harbor Service inside the cluster,
-#   3. installs Harbor 2.15.4 with the harbor-helm chart 1.19.4,
+#   3. creates the lab CA and Harbor's certificate in the Secret harbor-tls (once),
+#      then installs Harbor 2.15.4 with the harbor-helm chart 1.19.4,
 #   4. starts the workstation pod with the client tools and Harbor's CA trusted.
 set -euo pipefail
 # grep -q stops reading at the first match; under pipefail the command
@@ -75,6 +76,40 @@ if ! kubectl -n kube-system get configmap coredns -o jsonpath='{.data.Corefile}'
     --dry-run=client -o yaml | kubectl apply -f -
   kubectl -n kube-system rollout restart deployment/coredns
   kubectl -n kube-system rollout status deployment/coredns --timeout=120s
+fi
+
+# Harbor's TLS certificate comes from the Secret harbor-tls, signed by a lab
+# certificate authority (CA) created once here. With certSource auto, the chart
+# generates a new CA and certificate on every helm upgrade, and the workstation,
+# which trusts the CA it downloaded at start, then refuses every HTTPS request.
+# The keys are tls.crt, tls.key and ca.crt; caSecretName in the values makes
+# core offer ca.crt at /api/v2.0/systeminfo/getcert.
+kubectl create namespace harbor --dry-run=client -o yaml | kubectl apply -f -
+if ! kubectl -n harbor get secret harbor-tls >/dev/null 2>&1; then
+  echo "[lab] Creating the lab certificate authority and Harbor's certificate..."
+  TLS_WORK="$(mktemp -d)"
+  cat > "$TLS_WORK/ca.cnf" <<'CNF'
+[req]
+distinguished_name = dn
+[dn]
+[v3_ca]
+basicConstraints = critical,CA:TRUE
+keyUsage = critical,keyCertSign,cRLSign
+subjectKeyIdentifier = hash
+CNF
+  printf 'subjectAltName=DNS:%s\nextendedKeyUsage=serverAuth\n' "$HARBOR_HOST" > "$TLS_WORK/server.ext"
+  openssl genrsa -out "$TLS_WORK/ca.key" 2048 2>/dev/null
+  openssl req -x509 -new -key "$TLS_WORK/ca.key" -days 365 -subj "/CN=Harbor Lab CA" \
+    -config "$TLS_WORK/ca.cnf" -extensions v3_ca -out "$TLS_WORK/ca.crt"
+  openssl genrsa -out "$TLS_WORK/tls.key" 2048 2>/dev/null
+  openssl req -new -key "$TLS_WORK/tls.key" -subj "/CN=${HARBOR_HOST}" \
+    -config "$TLS_WORK/ca.cnf" -out "$TLS_WORK/tls.csr"
+  openssl x509 -req -in "$TLS_WORK/tls.csr" -CA "$TLS_WORK/ca.crt" -CAkey "$TLS_WORK/ca.key" \
+    -CAcreateserial -days 365 -extfile "$TLS_WORK/server.ext" -out "$TLS_WORK/tls.crt" 2>/dev/null
+  kubectl -n harbor create secret generic harbor-tls \
+    --from-file=tls.crt="$TLS_WORK/tls.crt" --from-file=tls.key="$TLS_WORK/tls.key" \
+    --from-file=ca.crt="$TLS_WORK/ca.crt"
+  rm -rf "$TLS_WORK"
 fi
 
 echo "[lab] Installing Harbor (chart ${HARBOR_CHART_VERSION}); this takes several minutes..."

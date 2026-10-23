@@ -21,15 +21,16 @@ expose:
   type: clusterIP
   tls:
     enabled: true
-    certSource: auto
-    auto:
-      commonName: harbor.localtest.me
+    certSource: secret
+    secret:
+      secretName: harbor-tls
   clusterIP:
     name: harbor
     ports:
       httpPort: 8080
       httpsPort: 8443
 externalURL: https://harbor.localtest.me:8443
+caSecretName: harbor-tls
 harborAdminPassword: Harbor12345
 persistence:
   enabled: false
@@ -37,7 +38,14 @@ trivy:
   enabled: true
 metrics:
   enabled: false
+redis:
+  internal:
+    image:
+      repository: docker.io/valkey/valkey
+      tag: 8.1.10-alpine
 ```
+
+Two groups of lines are specific to this lab. `expose.tls` and `caSecretName` point Harbor at the Secret `harbor-tls`, which holds the lab certificate and the lab certificate authority (CA) that signed it. The `redis` lines replace the bundled Redis image with Valkey, because Harbor's own images are built for amd64 only and the bundled one crashes under emulation on arm64 machines.
 
 The next sections take these values one at a time, starting with how Harbor is reached.
 

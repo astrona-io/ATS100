@@ -6,7 +6,7 @@ Solve this question on: `terminal`
 
 ## Scenario
 
-The security team wants Harbor to stop using the certificate the Helm chart generated. Every certificate must come from the team's own certificate authority, **Inventory Lab CA**. A colleague started the change and went on holiday:
+The security team wants Harbor to stop using the lab certificate it was installed with, signed by Harbor Lab CA. Every certificate must come from the team's own certificate authority, **Inventory Lab CA**. A colleague started the change and went on holiday:
 
 - The CA's certificate and key are in the Secret `lab-ca` in the namespace `harbor` (keys `ca.crt` and `ca.key`).
 - The release `harbor` already serves its certificate from the Secret `harbor-tls` and offers the CA for download from the same Secret.
@@ -23,7 +23,7 @@ The workstation pod can install `openssl` with `apk add --no-cache openssl`. The
 ## Constraints
 
 - Keep TLS on, keep `certSource: secret` with the Secret `harbor-tls`, and keep `externalURL` at `https://harbor.localtest.me:8443`.
-- Sign the certificate with the Inventory Lab CA in `lab-ca`. Do not create a new CA, and do not go back to the chart's generated certificate.
+- Sign the certificate with the Inventory Lab CA in `lab-ca`. Do not create a new CA, do not go back to the Harbor Lab CA, and do not switch to the chart's generated certificate (`certSource: auto`).
 - Do not reinstall Harbor.
 
 ## Done when

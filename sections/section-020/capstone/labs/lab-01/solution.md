@@ -18,7 +18,7 @@ ws sh -c 'apk add --no-cache openssl >/dev/null && echo | openssl s_client -conn
   -servername harbor.localtest.me 2>/dev/null | openssl x509 -noout -subject -issuer -ext subjectAltName'
 ```
 
-There are two faults. The certificate was issued for `harbor.example.com`, so its SAN does not list `harbor.localtest.me`. And the issuer is Inventory Lab CA, which the workstation does not trust yet: it still trusts the CA it downloaded at start, the one the chart generated.
+There are two faults. The certificate was issued for `harbor.example.com`, so its SAN does not list `harbor.localtest.me`. And the issuer is Inventory Lab CA, which the workstation does not trust yet: it still trusts the CA it downloaded at start, Harbor Lab CA.
 
 ## Step 2: Issue a certificate for the right host
 
@@ -85,7 +85,7 @@ astrona submit -c sections/section-020/capstone/labs/lab-01
 
 | Shortcut | What happens |
 | --- | --- |
-| Going back to `certSource: auto` | The workstation works again, but the certificate does not come from the Inventory Lab CA |
+| Going back to `certSource: auto` | The chart generates a new CA, which the workstation does not trust either, and the certificate does not come from the Inventory Lab CA |
 | A self-signed certificate for `harbor.localtest.me` | It does not verify against the Inventory Lab CA |
 | Restarting only the workstation | It trusts the new CA, but the certificate still names `harbor.example.com` |
 | `--insecure` on every client | Every client stops checking certificates; the task forbids it |
