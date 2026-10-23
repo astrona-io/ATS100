@@ -293,6 +293,18 @@ ws harbor --help
 
 ### Environment facts the text must respect
 
+- **The `harbor` CLI v0.0.27 without a terminal (seen on a live run,
+  2026-10-23).** Every page command runs through `kubectl exec -i` with no
+  terminal, so any command that falls back to an interactive form fails
+  (`huh: could not open a new TTY`, or `log.Fatal`). Rules from the v0.0.27
+  source: `harbor login --password-stdin` reads only from a terminal (a pipe
+  fails with `inappropriate ioctl for device`; upstream issue #943 is
+  wontfix), so pages pass the lab-only password with `-p`, and scripts never
+  sign in (sign in once, then `harbor context switch`). `harbor project
+  create` needs a name and `--storage-limit` (`-1` is no quota). `harbor
+  project member create` needs `--username` and `--roleid` (`--role` is
+  ignored); group members cannot be added without the form, so use
+  `POST /api/v2.0/projects/<project>/members` with `member_group`.
 - **Harbor images are amd64 only (seen on a live run, 2026-10-23).** On an
   arm64 machine (Apple silicon) every `goharbor/*` image runs under
   emulation. The bundled Valkey (Redis) crashes there with a segmentation

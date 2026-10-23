@@ -24,7 +24,7 @@ ws harbor project list
 
 The table lists the project `inventory`. The CLI read the saved credential, sent it to `core` with each API request, and `core` returned only the projects `inventory-dev` may see.
 
-`--password` on the command line ends up in your shell history and in the process list. For real work, pass it on standard input with `--password-stdin` instead, for example `printf '%s' "$HARBOR_PASSWORD" | harbor login ... --password-stdin`.
+`--password` on the command line ends up in your shell history and in the process list. For real work, use `--password-stdin` in an interactive shell and type the password at the prompt. The `harbor` CLI (version 0.0.27) reads `--password-stdin` only from a terminal, as a hidden prompt; a password piped in from `echo` or `printf` fails with `inappropriate ioctl for device`. A script should not sign in at all: sign in once at a terminal and let the script select the saved credential with `harbor context switch`.
 
 ## The configuration file
 
