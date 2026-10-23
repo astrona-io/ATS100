@@ -20,8 +20,8 @@ The login makes the new context current, and `get` prints `inventory-reader`. Th
 Find the field names before you write the filter:
 
 ```sh
-ws sh -c 'harbor repo list inventory -o json | jq ".[] | .name"'
-ws sh -c 'harbor artifact list inventory/podinfo -o json | jq ".[] | {digest, tags: [.tags[]?.name]}"'
+ws sh -c 'harbor repo list inventory -o json | jq ".Payload[] | .name"'
+ws sh -c 'harbor artifact list inventory/podinfo -o json | jq ".Payload[] | {digest, tags: [.tags[]?.name]}"'
 ```
 
 The repositories are `inventory/podinfo` and `inventory/charts/podinfo`. Each artifact has one `digest` and a list of `tags`, each with a `name`. The `podinfo` repository has two artifacts, tagged `6.14.1` and `6.15.0`.
@@ -33,9 +33,9 @@ Loop over the repositories, list the artifacts of each, and turn every tag into 
 ```sh
 ws sh -c '
   : > /tmp/rows.jsonl
-  for repo in $(harbor repo list inventory -o json | jq -r ".[].name"); do
+  for repo in $(harbor repo list inventory -o json | jq -r ".Payload[].name"); do
     harbor artifact list "$repo" -o json \
-      | jq -c --arg repo "$repo" ".[] | .digest as \$digest | .tags[]? | {repository: \$repo, tag: .name, digest: \$digest}" \
+      | jq -c --arg repo "$repo" ".Payload[] | .digest as \$digest | .tags[]? | {repository: \$repo, tag: .name, digest: \$digest}" \
       >> /tmp/rows.jsonl
   done
   jq -s "sort_by(.repository, .tag)" /tmp/rows.jsonl > /root/inventory-report.json'

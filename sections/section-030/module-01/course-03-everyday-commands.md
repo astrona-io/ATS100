@@ -44,10 +44,10 @@ A table is easy to read and hard to parse. The global flag `-o` (`--output-forma
 List the tags and digests of `inventory/podinfo` as JSON, and keep only those two fields:
 
 ```sh
-ws sh -c 'harbor artifact list inventory/podinfo -o json | jq -r ".[] | \"\(.tags[0].name) \(.digest)\""'
+ws sh -c 'harbor artifact list inventory/podinfo -o json | jq -r ".Payload[] | \"\(.tags[0].name) \(.digest)\""'
 ```
 
-Each line shows a tag and its digest, for example `6.15.0` followed by a `sha256:` value. The JSON follows Harbor's REST API model, so the field names are the same as in the API: `digest`, `tags`, `type`, `push_time`. A loop over `harbor repo list inventory -o json` and `harbor artifact list <repository> -o json` gives a full inventory of a project in a few lines of shell.
+Each line shows a tag and its digest, for example `6.15.0` followed by a `sha256:` value. List commands wrap their result in an object: the items are in `Payload`, next to `XTotalCount` and `Link`, so `jq` starts with `.Payload[]`. The items follow Harbor's REST API model, so the field names are the same as in the API: `digest`, `tags`, `type`, `push_time`. A loop over `harbor repo list inventory -o json` and `harbor artifact list <repository> -o json` gives a full inventory of a project in a few lines of shell.
 
 ## When the CLI is not enough
 

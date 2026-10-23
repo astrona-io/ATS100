@@ -89,20 +89,23 @@ push_check() {
 }
 
 # current_credential FIELD: prints a field (username, serveraddress) of the
-# harbor CLI's current credential, read from its configuration file.
+# harbor CLI's current credential, read from its configuration file. The CLI
+# writes current-credential-name after the credentials list, so the values are
+# collected first and printed at the end.
 current_credential() {
   ws cat /root/.config/harbor-cli/config.yaml 2>/dev/null | awk -v field="$1" '
     /^current-credential-name:/ { current = $2 }
     /^[[:space:]]*- name:/ { name = $3 }
-    $1 == field ":" && name == current { print $2 }'
+    $1 == field ":" { value[name] = $2 }
+    END { print value[current] }'
 }
 
 ws harbor login "$HARBOR_URL" --username inventory-reader --password Inventory-read-123 --context-name inventory-reader
 ws harbor context switch inventory-reader
 ws sh -c '
   : > /tmp/rows.jsonl
-  for repo in $(harbor repo list inventory -o json | jq -r ".[].name"); do
+  for repo in $(harbor repo list inventory -o json | jq -r ".Payload[].name"); do
     harbor artifact list "$repo" -o json \
-      | jq -c --arg repo "$repo" ".[] | {digest: .digest, tags: [.tags[]?.name]} | .tags[] as \$tag | {repository: \$repo, tag: \$tag, digest: .digest}" >> /tmp/rows.jsonl
+      | jq -c --arg repo "$repo" ".Payload[] | {digest: .digest, tags: [.tags[]?.name]} | .tags[] as \$tag | {repository: \$repo, tag: \$tag, digest: .digest}" >> /tmp/rows.jsonl
   done
   jq -s "sort_by(.repository, .tag)" /tmp/rows.jsonl > /root/inventory-report.json'
