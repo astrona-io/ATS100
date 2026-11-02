@@ -29,8 +29,6 @@ training:
     name: Harbor
     code: HARBOR
     provider: Astrona
-    domain: Architecture, Installation & Harbor CLI Basics
-    weight: 10
 
 modules:
 
