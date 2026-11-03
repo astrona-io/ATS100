@@ -1,0 +1,245 @@
+# Knowledge check for section 020. Listed in astrona.yaml as a `type: quiz` entry after the capstone lab.
+schema_version: 1
+kind: question_bank
+id: ats100-020
+course_id: ATS100
+exam_code: HARBOR
+status: draft
+provenance: Original practice material written for this course; not official exam questions.
+scope:
+  type: section
+  id: section-020
+  title: "Installing Harbor With Helm And TLS"
+placement:
+  position: after
+  reading: sections/section-020/module-01/course-03-docker-compose-installers.md
+questions:
+  - id: ats100-020-q01
+    type: single_choice
+    difficulty: beginner
+    learning_objective: "Explain what expose.type clusterIP creates"
+    source_readings:
+      - sections/section-020/module-01/course-01-harbor-helm-values.md
+    prompt: "With `expose.type: clusterIP`, what does the `harbor-helm` chart create?"
+    options:
+      - id: a
+        text: "An Ingress for `core` and the portal, with no `nginx`."
+        explanation: "Not correct. That is what `ingress` creates."
+      - id: b
+        text: "A LoadBalancer Service that asks the cloud for an address."
+        explanation: "Not correct. That is what `loadBalancer` creates."
+      - id: c
+        text: "A ClusterIP Service, named by `expose.clusterIP.name`, in front of `nginx`."
+        explanation: "Correct. Clients inside the cluster reach Harbor through it."
+      - id: d
+        text: "A NodePort Service that opens a port on every node."
+        explanation: "Not correct. That is what `nodePort` creates."
+    correct_option: c
+    explanation: "Correct. Clients inside the cluster reach Harbor through it."
+
+  - id: ats100-020-q02
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Explain what externalURL controls"
+    source_readings:
+      - sections/section-020/module-01/course-01-harbor-helm-values.md
+    prompt: "What does `core` use `externalURL` for?"
+    options:
+      - id: a
+        text: "For the push and pull commands in the portal and for the token realm."
+        explanation: "Correct. The registry puts the realm in its `WWW-Authenticate` header."
+      - id: b
+        text: "Only for the text shown in the portal."
+        explanation: "Not correct. It also decides the token realm, so a wrong value breaks every push."
+      - id: c
+        text: "To choose the port the `registry` container listens on."
+        explanation: "Not correct. It sets the address clients use, not a container port."
+      - id: d
+        text: "To create the DNS record for Harbor."
+        explanation: "Not correct. The chart does not create DNS records."
+    correct_option: a
+    explanation: "Correct. The registry puts the realm in its `WWW-Authenticate` header."
+
+  - id: ats100-020-q03
+    type: single_choice
+    difficulty: beginner
+    learning_objective: "Describe persistence.enabled false"
+    source_readings:
+      - sections/section-020/module-01/course-01-harbor-helm-values.md
+    prompt: "What happens with `persistence.enabled: false`?"
+    options:
+      - id: a
+        text: "Harbor stores all data in memory in one pod and never loses it."
+        explanation: "Not correct. An `emptyDir` is lost when the pod goes."
+      - id: b
+        text: "Harbor starts without a database."
+        explanation: "Not correct. The database still runs, but its data is lost with its pod."
+      - id: c
+        text: "The chart refuses to install."
+        explanation: "Not correct. The chart installs. It only keeps no data."
+      - id: d
+        text: "Every component uses an `emptyDir` volume, so the data disappears with the pod."
+        explanation: "Correct. This suits a lab and never production."
+    correct_option: d
+    explanation: "Correct. This suits a lab and never production."
+
+  - id: ats100-020-q04
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Know when harborAdminPassword applies"
+    source_readings:
+      - sections/section-020/module-01/course-01-harbor-helm-values.md
+    prompt: "You change `harborAdminPassword` in the values and run `helm upgrade`. What happens to the password of `admin`?"
+    options:
+      - id: a
+        text: "It changes at once, because `core` restarts."
+        explanation: "Not correct. The restart does not read the value again."
+      - id: b
+        text: "Nothing. The value applies only when Harbor first creates its database."
+        explanation: "Correct. After that the password lives in the database and is changed in Harbor."
+      - id: c
+        text: "It changes only if you also add `--reuse-values`."
+        explanation: "Not correct. The flag does not make the value apply."
+      - id: d
+        text: "Harbor deletes the database and creates a new one."
+        explanation: "Not correct. Harbor does not delete its data on upgrade."
+    correct_option: b
+    explanation: "Correct. After that the password lives in the database and is changed in Harbor."
+
+  - id: ats100-020-q05
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Avoid losing values on helm upgrade"
+    source_readings:
+      - sections/section-020/module-01/course-01-harbor-helm-values.md
+    prompt: "What happens when you run `helm upgrade` for the release without `--reuse-values` or a values file?"
+    options:
+      - id: a
+        text: "Helm keeps the old values automatically."
+        explanation: "Not correct. It does not. You must pass them again."
+      - id: b
+        text: "Helm refuses to upgrade without values."
+        explanation: "Not correct. It upgrades with the defaults."
+      - id: c
+        text: "Helm falls back to the chart defaults, such as `ingress` and `https://core.harbor.domain`."
+        explanation: "Correct. Your settings are lost."
+      - id: d
+        text: "Helm keeps the values but restarts only `nginx`."
+        explanation: "Not correct. It restarts what the new, default values change."
+    correct_option: c
+    explanation: "Correct. Your settings are lost."
+
+  - id: ats100-020-q06
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Know the effect of certSource auto on upgrade"
+    source_readings:
+      - sections/section-020/module-01/course-02-tls-certificates-and-trust.md
+    prompt: "A release uses `certSource: auto`. What happens to the certificate on every `helm upgrade`?"
+    options:
+      - id: a
+        text: "The chart generates a new CA and certificate, so every client must trust the new CA."
+        explanation: "Correct. Helm renders them again on each upgrade."
+      - id: b
+        text: "The same certificate stays, because the chart stores it."
+        explanation: "Not correct. It changes on every render."
+      - id: c
+        text: "The chart keeps the CA but issues a new certificate."
+        explanation: "Not correct. It generates a new CA too."
+      - id: d
+        text: "Harbor asks the certificate authority of the cluster for a new one."
+        explanation: "Not correct. The chart generates the CA itself."
+    correct_option: a
+    explanation: "Correct. Helm renders them again on each upgrade."
+
+  - id: ats100-020-q07
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "State what a certificate must list"
+    source_readings:
+      - sections/section-020/module-01/course-02-tls-certificates-and-trust.md
+    prompt: "Which field must list `harbor.localtest.me` so that modern clients accept Harbor's certificate?"
+    options:
+      - id: a
+        text: "The common name of the subject only."
+        explanation: "Not correct. Modern clients ignore the common name."
+      - id: b
+        text: "The issuer field."
+        explanation: "Not correct. The issuer names the CA, not the host."
+      - id: c
+        text: "The key usage extension."
+        explanation: "Not correct. It says what the key may do, not which host it serves."
+      - id: d
+        text: "The subject alternative name (SAN)."
+        explanation: "Correct. Modern clients ignore the common name."
+    correct_option: d
+    explanation: "Correct. Modern clients ignore the common name."
+
+  - id: ats100-020-q08
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Apply a replaced certificate Secret"
+    source_readings:
+      - sections/section-020/module-01/course-02-tls-certificates-and-trust.md
+    prompt: "You replaced the content of the Secret `harbor-tls`. What must you do so `nginx` presents the new certificate?"
+    options:
+      - id: a
+        text: "Nothing. `nginx` reloads the Secret by itself."
+        explanation: "Not correct. It reads the certificate at start only."
+      - id: b
+        text: "Restart it with `kubectl -n harbor rollout restart deployment/harbor-nginx`."
+        explanation: "Correct. `nginx` reads the Secret only when it starts."
+      - id: c
+        text: "Run `helm uninstall harbor` and install again."
+        explanation: "Not correct. A restart of the one Deployment is enough."
+      - id: d
+        text: "Change `externalURL` to the same value again."
+        explanation: "Not correct. That does not make `nginx` read the Secret."
+    correct_option: b
+    explanation: "Correct. `nginx` reads the Secret only when it starts."
+
+  - id: ats100-020-q09
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Explain caSecretName"
+    source_readings:
+      - sections/section-020/module-01/course-02-tls-certificates-and-trust.md
+    prompt: "What does setting `caSecretName` to a Secret with the key `ca.crt` do?"
+    options:
+      - id: a
+        text: "`nginx` uses the CA to sign the certificate when it starts."
+        explanation: "Not correct. `nginx` presents a certificate. It does not sign one."
+      - id: b
+        text: "Harbor trusts only clients with a certificate from that CA."
+        explanation: "Not correct. The setting does not turn on client certificates."
+      - id: c
+        text: "`core` offers that CA for download at `/api/v2.0/systeminfo/getcert`."
+        explanation: "Correct. Clients can then fetch and trust it."
+      - id: d
+        text: "The chart creates a new certificate from that CA."
+        explanation: "Not correct. The chart does not create it. The Secret already holds the certificate."
+    correct_option: c
+    explanation: "Correct. Clients can then fetch and trust it."
+
+  - id: ats100-020-q10
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Apply a change to harbor.yml"
+    source_readings:
+      - sections/section-020/module-01/course-03-docker-compose-installers.md
+    prompt: "You edited `harbor.yml` on a Docker Compose install. Which step makes the containers use the change?"
+    options:
+      - id: a
+        text: "Run `./prepare` and start Harbor again."
+        explanation: "Correct. `prepare` writes the new configuration and `docker-compose.yml`."
+      - id: b
+        text: "Nothing, the containers read `harbor.yml` as it changes."
+        explanation: "Not correct. The installer reads the file once."
+      - id: c
+        text: "Only restart the Docker Engine."
+        explanation: "Not correct. The containers would start with the old configuration."
+      - id: d
+        text: "Run `docker compose pull`."
+        explanation: "Not correct. This fetches images and does not rewrite the configuration."
+    correct_option: a
+    explanation: "Correct. `prepare` writes the new configuration and `docker-compose.yml`."

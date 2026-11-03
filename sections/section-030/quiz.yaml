@@ -1,0 +1,245 @@
+# Knowledge check for section 030. Listed in astrona.yaml as a `type: quiz` entry after the capstone lab.
+schema_version: 1
+kind: question_bank
+id: ats100-030
+course_id: ATS100
+exam_code: HARBOR
+status: draft
+provenance: Original practice material written for this course; not official exam questions.
+scope:
+  type: section
+  id: section-030
+  title: "The Harbor Command-Line Tool"
+placement:
+  position: after
+  reading: sections/section-030/module-01/course-03-everyday-commands.md
+questions:
+  - id: ats100-030-q01
+    type: single_choice
+    difficulty: beginner
+    learning_objective: "State what harbor login saves"
+    source_readings:
+      - sections/section-030/module-01/course-01-signing-in.md
+    prompt: "What does `harbor login` save when the server accepts the login?"
+    options:
+      - id: a
+        text: "Only the server address."
+        explanation: "Not correct. It also saves the user and the password."
+      - id: b
+        text: "The password in plain text."
+        explanation: "Not correct. The password is encrypted."
+      - id: c
+        text: "A session token that expires when the terminal closes."
+        explanation: "Not correct. The CLI saves a credential in a file, not a temporary session."
+      - id: d
+        text: "A credential: a name, the server address, the user name and the encrypted password."
+        explanation: "Correct. It is stored in the configuration file."
+    correct_option: d
+    explanation: "Correct. It is stored in the configuration file."
+
+  - id: ats100-030-q02
+    type: single_choice
+    difficulty: beginner
+    learning_objective: "Find the default configuration file"
+    source_readings:
+      - sections/section-030/module-01/course-01-signing-in.md
+    prompt: "Where does the `harbor` CLI keep its credentials by default?"
+    options:
+      - id: a
+        text: "In `/etc/harbor/harbor.yml`."
+        explanation: "Not correct. That is a Harbor installer file, not the CLI file."
+      - id: b
+        text: "In `$HOME/.config/harbor-cli/config.yaml`."
+        explanation: "Correct. In the workstation that is `/root/.config/harbor-cli/config.yaml`."
+      - id: c
+        text: "In the Harbor database."
+        explanation: "Not correct. The CLI stores credentials on the client."
+      - id: d
+        text: "In `~/.docker/config.json`."
+        explanation: "Not correct. That file belongs to Docker."
+    correct_option: b
+    explanation: "Correct. In the workstation that is `/root/.config/harbor-cli/config.yaml`."
+
+  - id: ats100-030-q03
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Apply the order of the configuration file settings"
+    source_readings:
+      - sections/section-030/module-01/course-01-signing-in.md
+    prompt: "Both `--config` and `HARBOR_CLI_CONFIG` are set. Which file does the CLI use?"
+    options:
+      - id: a
+        text: "The file from `HARBOR_CLI_CONFIG`."
+        explanation: "Not correct. The flag wins over the variable."
+      - id: b
+        text: "The default file."
+        explanation: "Not correct. The default is used only when neither is set."
+      - id: c
+        text: "The file from `--config`."
+        explanation: "Correct. The flag wins over the variable, and the variable wins over the default."
+      - id: d
+        text: "Both files, merged."
+        explanation: "Not correct. The CLI reads one file."
+    correct_option: c
+    explanation: "Correct. The flag wins over the variable, and the variable wins over the default."
+
+  - id: ats100-030-q04
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "List where the encryption key is searched"
+    source_readings:
+      - sections/section-030/module-01/course-01-signing-in.md
+    prompt: "In which order does the CLI look for the key that encrypts its passwords?"
+    options:
+      - id: a
+        text: "`HARBOR_ENCRYPTION_KEY`, then the operating system keyring, then a file under `~/.harbor/keyring/`."
+        explanation: "Correct. The file is the fallback, and the CLI warns when it uses it."
+      - id: b
+        text: "The keyring first, then `HARBOR_ENCRYPTION_KEY`, then the file."
+        explanation: "Not correct. The environment variable comes first."
+      - id: c
+        text: "The file under `~/.harbor/keyring/` first, then the keyring."
+        explanation: "Not correct. The file is the last choice."
+      - id: d
+        text: "The Harbor server, which returns the key at login."
+        explanation: "Not correct. The key stays on the client."
+    correct_option: a
+    explanation: "Correct. The file is the fallback, and the CLI warns when it uses it."
+
+  - id: ats100-030-q05
+    type: single_choice
+    difficulty: beginner
+    learning_objective: "Know what decides the current user and server"
+    source_readings:
+      - sections/section-030/module-01/course-02-contexts.md
+    prompt: "Which key in the configuration file decides which credential each command uses?"
+    options:
+      - id: a
+        text: "`serveraddress`."
+        explanation: "Not correct. Each credential has its own server address. It does not select one."
+      - id: b
+        text: "`current-credential-name`."
+        explanation: "Correct. The latest login changes it."
+      - id: c
+        text: "`username`."
+        explanation: "Not correct. Several credentials can share a user name."
+      - id: d
+        text: "`credentials`."
+        explanation: "Not correct. It is the list of all credentials."
+    correct_option: b
+    explanation: "Correct. The latest login changes it."
+
+  - id: ats100-030-q06
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Explain the risk of --password"
+    source_readings:
+      - sections/section-030/module-01/course-02-contexts.md
+    prompt: "Why should a script not pass the password with `--password`?"
+    options:
+      - id: a
+        text: "The CLI then ignores the user name."
+        explanation: "Not correct. The user name is still used."
+      - id: b
+        text: "The password is saved in plain text in the file."
+        explanation: "Not correct. It is still encrypted in the file."
+      - id: c
+        text: "The server refuses passwords sent on the command line."
+        explanation: "Not correct. The server does not see how the CLI got the password."
+      - id: d
+        text: "It ends up in the shell history and in the process list."
+        explanation: "Correct. Sign in once at a terminal and let the script select the context."
+    correct_option: d
+    explanation: "Correct. Sign in once at a terminal and let the script select the context."
+
+  - id: ats100-030-q07
+    type: single_choice
+    difficulty: beginner
+    learning_objective: "Use harbor context switch"
+    source_readings:
+      - sections/section-030/module-01/course-02-contexts.md
+    prompt: "What does `harbor context switch inventory-dev` do?"
+    options:
+      - id: a
+        text: "It changes the current credential to `inventory-dev` without signing in again."
+        explanation: "Correct. It changes `current-credential-name`."
+      - id: b
+        text: "It creates the user `inventory-dev` in Harbor."
+        explanation: "Not correct. It does not change anything in Harbor."
+      - id: c
+        text: "It signs in again and asks for the password."
+        explanation: "Not correct. It uses the saved credential."
+      - id: d
+        text: "It deletes every other context."
+        explanation: "Not correct. Other contexts stay in the file."
+    correct_option: a
+    explanation: "Correct. It changes `current-credential-name`."
+
+  - id: ats100-030-q08
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Repair a stale context"
+    source_readings:
+      - sections/section-030/module-01/course-02-contexts.md
+    prompt: "A saved context has an old password and every command fails with an authentication error. What is the simplest fix?"
+    options:
+      - id: a
+        text: "Change the user's password in Harbor to match the context."
+        explanation: "Not correct. That breaks every other client that uses the right password."
+      - id: b
+        text: "Edit the password in `config.yaml` by hand."
+        explanation: "Not correct. The file holds encrypted passwords, so a plain one does not decrypt."
+      - id: c
+        text: "Run `harbor login` again with the same `--context-name` and the right password."
+        explanation: "Correct. The CLI updates the existing credential."
+      - id: d
+        text: "Delete the keyring file and run the command again."
+        explanation: "Not correct. That removes the key and does not renew the password."
+    correct_option: c
+    explanation: "Correct. The CLI updates the existing credential."
+
+  - id: ats100-030-q09
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Read list output in a script"
+    source_readings:
+      - sections/section-030/module-01/course-03-everyday-commands.md
+    prompt: "How do you read the tags and digests of a repository in a script?"
+    options:
+      - id: a
+        text: "Parse the table output with `awk`."
+        explanation: "Not correct. Table columns change between CLI versions."
+      - id: b
+        text: "Use `-o json` and select the items under `.Payload[]` with `jq`."
+        explanation: "Correct. List commands wrap the result in an object."
+      - id: c
+        text: "Use `-o json` and select the items under `.items[]`."
+        explanation: "Not correct. The items are in `Payload`."
+      - id: d
+        text: "Use `-o csv` and split the fields by spaces."
+        explanation: "Not correct. CSV fields are separated by commas, and JSON with `jq` is the better choice for scripts."
+    correct_option: b
+    explanation: "Correct. List commands wrap the result in an object."
+
+  - id: ats100-030-q10
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Avoid interactive commands in scripts"
+    source_readings:
+      - sections/section-030/module-01/course-03-everyday-commands.md
+    prompt: "What happens when a script runs `harbor artifact list` without an argument?"
+    options:
+      - id: a
+        text: "It lists the artifacts of every project."
+        explanation: "Not correct. It asks for the project and the repository."
+      - id: b
+        text: "It fails at once with a `404` error."
+        explanation: "Not correct. It starts a prompt instead."
+      - id: c
+        text: "It lists the artifacts of the current project only."
+        explanation: "Not correct. The CLI has no current project."
+      - id: d
+        text: "It waits for interactive input for the project and the repository."
+        explanation: "Correct. Always pass `project/repository` in a script."
+    correct_option: d
+    explanation: "Correct. Always pass `project/repository` in a script."

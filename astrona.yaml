@@ -123,6 +123,10 @@ modules:
             url: https://goharbor.io/docs/2.15.0/working-with-projects/
           - name: "Managing Helm charts"
             url: https://goharbor.io/docs/2.15.0/working-with-projects/working-with-images/managing-helm-charts/
+      - type: quiz
+        title: "Knowledge Check: Harbor Architecture And OCI Artifacts"
+        path: sections/section-010/quiz.yaml
+        pass_score: 70
 
   - id: module-020
     title: "Installing Harbor With Helm And TLS"
@@ -193,6 +197,10 @@ modules:
             url: https://goharbor.io/docs/2.15.0/install-config/configure-https/
           - name: "Deploying Harbor with high availability via Helm"
             url: https://goharbor.io/docs/2.15.0/install-config/harbor-ha-helm/
+      - type: quiz
+        title: "Knowledge Check: Installing Harbor With Helm And TLS"
+        path: sections/section-020/quiz.yaml
+        pass_score: 70
 
   - id: module-030
     title: "The Harbor Command-Line Tool"
@@ -261,3 +269,11 @@ modules:
             url: https://goharbor.io/cli-docs/
           - name: "Working with projects"
             url: https://goharbor.io/docs/2.15.0/working-with-projects/
+      - type: quiz
+        title: "Knowledge Check: The Harbor Command-Line Tool"
+        path: sections/section-030/quiz.yaml
+        pass_score: 70
+      - type: quiz
+        title: "Final Domain Quiz"
+        path: sections/final-domain-quiz.yaml
+        pass_score: 70
