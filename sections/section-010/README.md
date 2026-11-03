@@ -28,6 +28,10 @@ The playground holds a fresh Harbor 2.15.4 and a workstation pod with the client
 3. Images, Helm Charts And Other OCI Artifacts
 4. Summary
 
+### 2. The OCI Distribution Model: Manifests, Blobs, Indexes And Referrers
+
+This module has four parts, a graded lab after the part on referrers, and a summary. It opens manifests and blobs, image indexes and referrers, and the data model and API behind them. Its lab attaches release notes to an image without changing the tag. Work it after module 1.
+
 ## Section capstone: Make Harbor Store Images And Charts Again
 
 The capstone combines the whole module. Two components of Harbor are stopped, the project `inventory` is empty, and the team needs both the podinfo image and its Helm chart in Harbor, byte for byte the same as the source. Work it after the module lab.

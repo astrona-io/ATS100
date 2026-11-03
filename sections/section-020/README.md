@@ -25,6 +25,10 @@ The playground holds Harbor 2.15.4 with the project `inventory`, which already h
 3. The Docker Compose Installers And harbor.yml
 4. Summary
 
+### 2. Upgrading, Rolling Back And Migrating Harbor
+
+This module has four parts, a graded lab after the part on failed upgrades, and a summary. It plans and previews a Helm upgrade, reads a failed one, and rolls back. Its lab rolls back a failed registry upgrade. Work it after module 1.
+
 ## Section capstone: Serve Harbor With Your Own Certificate
 
 The capstone moves Harbor from the lab certificate it was installed with to one signed by the team's own certificate authority. Someone started the change and left it half done. Work it after the module lab.

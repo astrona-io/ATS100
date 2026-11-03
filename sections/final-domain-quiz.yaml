@@ -217,3 +217,417 @@ questions:
         explanation: "Not correct. CSV fields are separated by commas, and JSON with `jq` is the better choice for scripts."
     correct_option: b
     explanation: "Correct. List commands wrap the result in an object."
+
+  - id: ats100-final-q10
+    type: single_choice
+    difficulty: beginner
+    learning_objective: "Describe what the registry component stores"
+    source_readings:
+      - sections/section-010/module-01/course-01-the-harbor-components.md
+    prompt: "Which component stores the layers and manifests of every artifact and answers under `/v2/`?"
+    options:
+      - id: a
+        text: "`portal`."
+        explanation: "Not correct. `portal` is the web user interface. It stores no artifacts."
+      - id: b
+        text: "`database`."
+        explanation: "Not correct. The PostgreSQL database holds projects, users, policies and scan results, not layers."
+      - id: c
+        text: "`redis`."
+        explanation: "Not correct. Redis holds the job queue and caches, not layers."
+      - id: d
+        text: "`registry`."
+        explanation: "Correct. It is the CNCF Distribution registry and serves the OCI distribution API."
+    correct_option: d
+    explanation: "Correct. It is the CNCF Distribution registry and serves the OCI distribution API."
+
+  - id: ats100-final-q11
+    type: single_choice
+    difficulty: beginner
+    learning_objective: "Choose the Service a client should use"
+    source_readings:
+      - sections/section-010/module-01/course-01-the-harbor-components.md
+    prompt: "Which Kubernetes Service in the namespace `harbor` should clients use to reach Harbor?"
+    options:
+      - id: a
+        text: "`harbor-core`, which points at `core`."
+        explanation: "Not correct. Calling a component Service directly skips TLS and authentication."
+      - id: b
+        text: "`harbor-registry`, which points at `registry`."
+        explanation: "Not correct. Calling it directly skips the token handshake and behaves differently."
+      - id: c
+        text: "`harbor-portal`, which points at `portal`."
+        explanation: "Not correct. It serves only the web interface, not the API or image traffic."
+      - id: d
+        text: "`harbor`, which points at `nginx`."
+        explanation: "Correct. It is the only Service meant for clients."
+    correct_option: d
+    explanation: "Correct. It is the only Service meant for clients."
+
+  - id: ats100-final-q12
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Predict the effect of a stopped registry"
+    source_readings:
+      - sections/section-010/module-01/course-02-following-a-push.md
+    prompt: "You scale the `harbor-registry` Deployment to 0 replicas. What do you see?"
+    options:
+      - id: a
+        text: "Every component is `unhealthy` and the portal does not load."
+        explanation: "Not correct. Other components keep running. Only the registry and `registryctl` report unhealthy."
+      - id: b
+        text: "`registry` and `registryctl` are `unhealthy` and pushes fail, while the API and the portal keep working."
+        explanation: "Correct. Only the registry pod is gone."
+      - id: c
+        text: "Pushes still work, because `core` keeps a copy of the layers."
+        explanation: "Not correct. `core` stores no layers, so a push fails."
+      - id: d
+        text: "Only `jobservice` becomes `unhealthy`."
+        explanation: "Not correct. The registry pod runs `registry` and `registryctl`, and those two are reported."
+    correct_option: b
+    explanation: "Correct. Only the registry pod is gone."
+
+  - id: ats100-final-q13
+    type: single_choice
+    difficulty: beginner
+    learning_objective: "Define a tag"
+    source_readings:
+      - sections/section-010/module-02/course-01-manifests-and-blobs.md
+    prompt: "What is a tag?"
+    options:
+      - id: a
+        text: "The SHA-256 hash of the manifest."
+        explanation: "Not correct. That is the digest."
+      - id: b
+        text: "A name in a repository that points at the digest of one manifest and can be moved."
+        explanation: "Correct. The digest is the exact identity."
+      - id: c
+        text: "A layer of the image file system."
+        explanation: "Not correct. Layers are blobs."
+      - id: d
+        text: "A Harbor project role."
+        explanation: "Not correct. Roles are not tags."
+    correct_option: b
+    explanation: "Correct. The digest is the exact identity."
+
+  - id: ats100-final-q14
+    type: single_choice
+    difficulty: beginner
+    learning_objective: "Recognise an image index"
+    source_readings:
+      - sections/section-010/module-02/course-02-image-indexes.md
+    prompt: "What does an image index list?"
+    options:
+      - id: a
+        text: "Image manifests, each with a platform such as linux/amd64 or linux/arm64."
+        explanation: "Correct. The client picks the entry for its own platform."
+      - id: b
+        text: "Only blobs, one per layer."
+        explanation: "Not correct. That is an image manifest."
+      - id: c
+        text: "Harbor projects."
+        explanation: "Not correct. Projects are not in an index."
+      - id: d
+        text: "Vulnerabilities."
+        explanation: "Not correct. Scan results are not in an index."
+    correct_option: a
+    explanation: "Correct. The client picks the entry for its own platform."
+
+  - id: ats100-final-q15
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Attach a file"
+    source_readings:
+      - sections/section-010/module-02/course-03-referrers.md
+    prompt: "Which command stores a file so that it refers to an existing image?"
+    options:
+      - id: a
+        text: "`oras push <repository>:notes <file>`."
+        explanation: "Not correct. That makes an unrelated artifact."
+      - id: b
+        text: "`regctl image copy` of the file."
+        explanation: "Not correct. `image copy` copies images between registries."
+      - id: c
+        text: "`kubectl cp` of the file."
+        explanation: "Not correct. That copies files into a pod, not into Harbor."
+      - id: d
+        text: "`oras attach --artifact-type <type> <image reference> <file>`."
+        explanation: "Correct. It sets the subject of the new manifest."
+    correct_option: d
+    explanation: "Correct. It sets the subject of the new manifest."
+
+  - id: ats100-final-q16
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Explain what externalURL controls"
+    source_readings:
+      - sections/section-020/module-01/course-01-harbor-helm-values.md
+    prompt: "What does `core` use `externalURL` for?"
+    options:
+      - id: a
+        text: "For the push and pull commands in the portal and for the token realm."
+        explanation: "Correct. The registry puts the realm in its `WWW-Authenticate` header."
+      - id: b
+        text: "Only for the text shown in the portal."
+        explanation: "Not correct. It also decides the token realm, so a wrong value breaks every push."
+      - id: c
+        text: "To choose the port the `registry` container listens on."
+        explanation: "Not correct. It sets the address clients use, not a container port."
+      - id: d
+        text: "To create the DNS record for Harbor."
+        explanation: "Not correct. The chart does not create DNS records."
+    correct_option: a
+    explanation: "Correct. The registry puts the realm in its `WWW-Authenticate` header."
+
+  - id: ats100-final-q17
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Avoid losing values on helm upgrade"
+    source_readings:
+      - sections/section-020/module-01/course-01-harbor-helm-values.md
+    prompt: "What happens when you run `helm upgrade` for the release without `--reuse-values` or a values file?"
+    options:
+      - id: a
+        text: "Helm keeps the old values automatically."
+        explanation: "Not correct. It does not. You must pass them again."
+      - id: b
+        text: "Helm refuses to upgrade without values."
+        explanation: "Not correct. It upgrades with the defaults."
+      - id: c
+        text: "Helm falls back to the chart defaults, such as `ingress` and `https://core.harbor.domain`."
+        explanation: "Correct. Your settings are lost."
+      - id: d
+        text: "Helm keeps the values but restarts only `nginx`."
+        explanation: "Not correct. It restarts what the new, default values change."
+    correct_option: c
+    explanation: "Correct. Your settings are lost."
+
+  - id: ats100-final-q18
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Apply a replaced certificate Secret"
+    source_readings:
+      - sections/section-020/module-01/course-02-tls-certificates-and-trust.md
+    prompt: "You replaced the content of the Secret `harbor-tls`. What must you do so `nginx` presents the new certificate?"
+    options:
+      - id: a
+        text: "Nothing. `nginx` reloads the Secret by itself."
+        explanation: "Not correct. It reads the certificate at start only."
+      - id: b
+        text: "Restart it with `kubectl -n harbor rollout restart deployment/harbor-nginx`."
+        explanation: "Correct. `nginx` reads the Secret only when it starts."
+      - id: c
+        text: "Run `helm uninstall harbor` and install again."
+        explanation: "Not correct. A restart of the one Deployment is enough."
+      - id: d
+        text: "Change `externalURL` to the same value again."
+        explanation: "Not correct. That does not make `nginx` read the Secret."
+    correct_option: b
+    explanation: "Correct. `nginx` reads the Secret only when it starts."
+
+  - id: ats100-final-q19
+    type: single_choice
+    difficulty: beginner
+    learning_objective: "Find newer chart versions"
+    source_readings:
+      - sections/section-020/module-04/course-01-planning-an-upgrade.md
+    prompt: "Which command lists the chart versions a repository offers?"
+    options:
+      - id: a
+        text: "`helm list`."
+        explanation: "Not correct. That lists installed releases."
+      - id: b
+        text: "`helm search repo harbor/harbor --versions`."
+        explanation: "Correct. It lists chart and app versions."
+      - id: c
+        text: "`helm history harbor`."
+        explanation: "Not correct. That lists revisions of one release."
+      - id: d
+        text: "`kubectl get chart`."
+        explanation: "Not correct. Charts are not Kubernetes objects."
+    correct_option: b
+    explanation: "Correct. It lists chart and app versions."
+
+  - id: ats100-final-q20
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Keep values during an upgrade"
+    source_readings:
+      - sections/section-020/module-04/course-02-previewing-and-applying.md
+    prompt: "What happens if you run `helm upgrade` with neither `--reuse-values` nor a values file?"
+    options:
+      - id: a
+        text: "Helm uses the chart defaults, so settings such as `externalURL` and the exposure type are lost."
+        explanation: "Correct. Harbor then runs with default configuration."
+      - id: b
+        text: "Helm reuses the last values."
+        explanation: "Not correct. That needs --reuse-values."
+      - id: c
+        text: "Helm refuses to run."
+        explanation: "Not correct. It runs with the defaults."
+      - id: d
+        text: "Helm asks which values to keep."
+        explanation: "Not correct. Helm does not ask."
+    correct_option: a
+    explanation: "Correct. Harbor then runs with default configuration."
+
+  - id: ats100-final-q21
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Read a failed upgrade"
+    source_readings:
+      - sections/section-020/module-04/course-03-when-an-upgrade-fails.md
+    prompt: "An upgrade timed out with `--wait`. What does the Helm history show for that revision?"
+    options:
+      - id: a
+        text: "Nothing; the revision is dropped."
+        explanation: "Not correct. Helm records failures."
+      - id: b
+        text: "The status `deployed`."
+        explanation: "Not correct. The upgrade did not complete."
+      - id: c
+        text: "The status `uninstalled`."
+        explanation: "Not correct. The release is not uninstalled."
+      - id: d
+        text: "The status `failed`, and the revision stays in the history."
+        explanation: "Correct. A failed revision is recorded."
+    correct_option: d
+    explanation: "Correct. A failed revision is recorded."
+
+  - id: ats100-final-q22
+    type: single_choice
+    difficulty: beginner
+    learning_objective: "Find the default configuration file"
+    source_readings:
+      - sections/section-030/module-01/course-01-signing-in.md
+    prompt: "Where does the `harbor` CLI keep its credentials by default?"
+    options:
+      - id: a
+        text: "In `/etc/harbor/harbor.yml`."
+        explanation: "Not correct. That is a Harbor installer file, not the CLI file."
+      - id: b
+        text: "In `$HOME/.config/harbor-cli/config.yaml`."
+        explanation: "Correct. In the workstation that is `/root/.config/harbor-cli/config.yaml`."
+      - id: c
+        text: "In the Harbor database."
+        explanation: "Not correct. The CLI stores credentials on the client."
+      - id: d
+        text: "In `~/.docker/config.json`."
+        explanation: "Not correct. That file belongs to Docker."
+    correct_option: b
+    explanation: "Correct. In the workstation that is `/root/.config/harbor-cli/config.yaml`."
+
+  - id: ats100-final-q23
+    type: single_choice
+    difficulty: beginner
+    learning_objective: "Know what decides the current user and server"
+    source_readings:
+      - sections/section-030/module-01/course-02-contexts.md
+    prompt: "Which key in the configuration file decides which credential each command uses?"
+    options:
+      - id: a
+        text: "`serveraddress`."
+        explanation: "Not correct. Each credential has its own server address. It does not select one."
+      - id: b
+        text: "`current-credential-name`."
+        explanation: "Correct. The latest login changes it."
+      - id: c
+        text: "`username`."
+        explanation: "Not correct. Several credentials can share a user name."
+      - id: d
+        text: "`credentials`."
+        explanation: "Not correct. It is the list of all credentials."
+    correct_option: b
+    explanation: "Correct. The latest login changes it."
+
+  - id: ats100-final-q24
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Repair a stale context"
+    source_readings:
+      - sections/section-030/module-01/course-02-contexts.md
+    prompt: "A saved context has an old password and every command fails with an authentication error. What is the simplest fix?"
+    options:
+      - id: a
+        text: "Change the user's password in Harbor to match the context."
+        explanation: "Not correct. That breaks every other client that uses the right password."
+      - id: b
+        text: "Edit the password in `config.yaml` by hand."
+        explanation: "Not correct. The file holds encrypted passwords, so a plain one does not decrypt."
+      - id: c
+        text: "Run `harbor login` again with the same `--context-name` and the right password."
+        explanation: "Correct. The CLI updates the existing credential."
+      - id: d
+        text: "Delete the keyring file and run the command again."
+        explanation: "Not correct. That removes the key and does not renew the password."
+    correct_option: c
+    explanation: "Correct. The CLI updates the existing credential."
+
+  - id: ats100-final-q25
+    type: single_choice
+    difficulty: beginner
+    learning_objective: "Read project access"
+    source_readings:
+      - sections/section-030/module-02/course-01-projects.md
+    prompt: "What does the flag `--public` do on `harbor project create`?"
+    options:
+      - id: a
+        text: "It makes the project visible only to admins."
+        explanation: "Not correct. That is the opposite."
+      - id: b
+        text: "It lets anyone pull from the project without signing in."
+        explanation: "Correct. The default is private."
+      - id: c
+        text: "It removes the quota."
+        explanation: "Not correct. The quota is set by `--storage-limit`."
+      - id: d
+        text: "It enables vulnerability scanning."
+        explanation: "Not correct. Scanning is a separate setting."
+    correct_option: b
+    explanation: "Correct. The default is private."
+
+  - id: ats100-final-q26
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Apply the role offset"
+    source_readings:
+      - sections/section-030/module-02/course-02-users-members-roles.md
+    prompt: "Which command makes `shipping-dev` a Developer in `shipping` with CLI v0.0.27?"
+    options:
+      - id: a
+        text: "`harbor project member create shipping --username shipping-dev --roleid 1`"
+        explanation: "Correct. The CLI adds 1 to the number, giving role 2."
+      - id: b
+        text: "`... --roleid 2`"
+        explanation: "Not correct. That produces role 3, a Guest."
+      - id: c
+        text: "`... --roleid 0`"
+        explanation: "Not correct. That is not a valid role number."
+      - id: d
+        text: "`... --role developer`"
+        explanation: "Not correct. The flag takes a number."
+    correct_option: a
+    explanation: "Correct. The CLI adds 1 to the number, giving role 2."
+
+  - id: ats100-final-q27
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Read artifact references"
+    source_readings:
+      - sections/section-030/module-02/course-03-repositories-artifacts-tags.md
+    prompt: "Two tags point at one digest. How many copies of the image does Harbor store?"
+    options:
+      - id: a
+        text: "Two, one per tag."
+        explanation: "Not correct. Tags do not copy data."
+      - id: b
+        text: "None until you pull."
+        explanation: "Not correct. The data is stored."
+      - id: c
+        text: "One per user."
+        explanation: "Not correct. Storage is per artifact."
+      - id: d
+        text: "One; both tags reference the same artifact."
+        explanation: "Correct. Tags are names for a digest."
+    correct_option: d
+    explanation: "Correct. Tags are names for a digest."

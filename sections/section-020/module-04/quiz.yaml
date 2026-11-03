@@ -1,0 +1,244 @@
+schema_version: 1
+kind: question_bank
+id: ats100-020-m04
+course_id: ATS100
+exam_code: HARBOR
+status: draft
+provenance: Original practice material written for this course; not official exam questions.
+scope:
+  type: module
+  id: section-020-module-04
+  title: "Upgrading, Rolling Back And Migrating Harbor"
+placement:
+  position: after
+  reading: sections/section-020/module-04/course-05-summary.md
+questions:
+  - id: ats100-020-m04-q01
+    type: single_choice
+    difficulty: beginner
+    learning_objective: "Tell the two versions apart"
+    source_readings:
+      - sections/section-020/module-04/course-01-planning-an-upgrade.md
+    prompt: "What is the chart version `1.19.4` of the release `harbor`?"
+    options:
+      - id: a
+        text: "The version of the packaged Helm templates, separate from the Harbor application version."
+        explanation: "Correct. The app version is 2.15.4."
+      - id: b
+        text: "The Harbor version that is running."
+        explanation: "Not correct. That is the application version."
+      - id: c
+        text: "The version of Helm."
+        explanation: "Not correct. Helm has its own version."
+      - id: d
+        text: "The version of Kubernetes."
+        explanation: "Not correct. The cluster version is unrelated."
+    correct_option: a
+    explanation: "Correct. The app version is 2.15.4."
+
+  - id: ats100-020-m04-q02
+    type: single_choice
+    difficulty: beginner
+    learning_objective: "Find newer chart versions"
+    source_readings:
+      - sections/section-020/module-04/course-01-planning-an-upgrade.md
+    prompt: "Which command lists the chart versions a repository offers?"
+    options:
+      - id: a
+        text: "`helm list`."
+        explanation: "Not correct. That lists installed releases."
+      - id: b
+        text: "`helm search repo harbor/harbor --versions`."
+        explanation: "Correct. It lists chart and app versions."
+      - id: c
+        text: "`helm history harbor`."
+        explanation: "Not correct. That lists revisions of one release."
+      - id: d
+        text: "`kubectl get chart`."
+        explanation: "Not correct. Charts are not Kubernetes objects."
+    correct_option: b
+    explanation: "Correct. It lists chart and app versions."
+
+  - id: ats100-020-m04-q03
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "State the upgrade rule"
+    source_readings:
+      - sections/section-020/module-04/course-01-planning-an-upgrade.md
+    prompt: "You run Harbor 2.13 and want 2.15. What should you do?"
+    options:
+      - id: a
+        text: "Upgrade straight to 2.15 and skip the notes."
+        explanation: "Not correct. Skipped minors can break the migration."
+      - id: b
+        text: "Reinstall Harbor 2.15 and keep the old data volume out."
+        explanation: "Not correct. That loses the data."
+      - id: c
+        text: "Upgrade to 2.14 first, check it, and then upgrade to 2.15."
+        explanation: "Correct. Upgrades go through each minor release."
+      - id: d
+        text: "Change only the image tags in the Deployments."
+        explanation: "Not correct. The chart and the migration must match."
+    correct_option: c
+    explanation: "Correct. Upgrades go through each minor release."
+
+  - id: ats100-020-m04-q04
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "List what to back up"
+    source_readings:
+      - sections/section-020/module-04/course-01-planning-an-upgrade.md
+    prompt: "Which set must be saved before an upgrade?"
+    options:
+      - id: a
+        text: "Only the portal pages."
+        explanation: "Not correct. The portal holds no data."
+      - id: b
+        text: "Only the pod logs."
+        explanation: "Not correct. Logs do not restore data."
+      - id: c
+        text: "Only the Helm chart archive."
+        explanation: "Not correct. The chart is public and holds none of your data."
+      - id: d
+        text: "The database, the registry storage, the Helm values and the Secrets such as `secretKey`."
+        explanation: "Correct. Each one is needed to restore the installation."
+    correct_option: d
+    explanation: "Correct. Each one is needed to restore the installation."
+
+  - id: ats100-020-m04-q05
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Keep values during an upgrade"
+    source_readings:
+      - sections/section-020/module-04/course-02-previewing-and-applying.md
+    prompt: "What happens if you run `helm upgrade` with neither `--reuse-values` nor a values file?"
+    options:
+      - id: a
+        text: "Helm uses the chart defaults, so settings such as `externalURL` and the exposure type are lost."
+        explanation: "Correct. Harbor then runs with default configuration."
+      - id: b
+        text: "Helm reuses the last values."
+        explanation: "Not correct. That needs --reuse-values."
+      - id: c
+        text: "Helm refuses to run."
+        explanation: "Not correct. It runs with the defaults."
+      - id: d
+        text: "Helm asks which values to keep."
+        explanation: "Not correct. Helm does not ask."
+    correct_option: a
+    explanation: "Correct. Harbor then runs with default configuration."
+
+  - id: ats100-020-m04-q06
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Use a dry run"
+    source_readings:
+      - sections/section-020/module-04/course-02-previewing-and-applying.md
+    prompt: "What does `helm upgrade --dry-run` prove?"
+    options:
+      - id: a
+        text: "That the new images exist."
+        explanation: "Not correct. Images are not checked."
+      - id: b
+        text: "That the chart renders with the given values; it does not prove that the pods start."
+        explanation: "Correct. It does not change the cluster."
+      - id: c
+        text: "That Harbor will be healthy."
+        explanation: "Not correct. Health depends on the running pods."
+      - id: d
+        text: "That the database is migrated."
+        explanation: "Not correct. Nothing runs."
+    correct_option: b
+    explanation: "Correct. It does not change the cluster."
+
+  - id: ats100-020-m04-q07
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Check an upgrade"
+    source_readings:
+      - sections/section-020/module-04/course-02-previewing-and-applying.md
+    prompt: "Which check shows that the upgraded Harbor works end to end?"
+    options:
+      - id: a
+        text: "`helm upgrade` exited with 0."
+        explanation: "Not correct. Ready objects do not prove a working push."
+      - id: b
+        text: "The portal login page loads."
+        explanation: "Not correct. The portal can work while `registry` is down."
+      - id: c
+        text: "The health API, the system information and a successful push."
+        explanation: "Correct. They test the components and the full push path."
+      - id: d
+        text: "`kubectl get nodes` is Ready."
+        explanation: "Not correct. Node state says nothing about Harbor."
+    correct_option: c
+    explanation: "Correct. They test the components and the full push path."
+
+  - id: ats100-020-m04-q08
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Read a failed upgrade"
+    source_readings:
+      - sections/section-020/module-04/course-03-when-an-upgrade-fails.md
+    prompt: "An upgrade timed out with `--wait`. What does the Helm history show for that revision?"
+    options:
+      - id: a
+        text: "Nothing; the revision is dropped."
+        explanation: "Not correct. Helm records failures."
+      - id: b
+        text: "The status `deployed`."
+        explanation: "Not correct. The upgrade did not complete."
+      - id: c
+        text: "The status `uninstalled`."
+        explanation: "Not correct. The release is not uninstalled."
+      - id: d
+        text: "The status `failed`, and the revision stays in the history."
+        explanation: "Correct. A failed revision is recorded."
+    correct_option: d
+    explanation: "Correct. A failed revision is recorded."
+
+  - id: ats100-020-m04-q09
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Roll back correctly"
+    source_readings:
+      - sections/section-020/module-04/course-03-when-an-upgrade-fails.md
+    prompt: "What does `helm rollback harbor 3` do?"
+    options:
+      - id: a
+        text: "It applies revision 3 again as a new revision and keeps the failed revision in the history."
+        explanation: "Correct. The revision number goes up."
+      - id: b
+        text: "It deletes every revision after 3."
+        explanation: "Not correct. History is kept."
+      - id: c
+        text: "It restores the database to revision 3."
+        explanation: "Not correct. Helm never restores data."
+      - id: d
+        text: "It uninstalls and reinstalls the release."
+        explanation: "Not correct. It applies the old manifests as a new revision."
+    correct_option: a
+    explanation: "Correct. The revision number goes up."
+
+  - id: ats100-020-m04-q10
+    type: single_choice
+    difficulty: advanced
+    learning_objective: "Explain what a rollback cannot undo"
+    source_readings:
+      - sections/section-020/module-04/course-04-migrations-backups-compose.md
+    prompt: "Why can a Helm rollback fail to work after upgrading to a newer Harbor version?"
+    options:
+      - id: a
+        text: "Helm deletes the old images."
+        explanation: "Not correct. Images are not deleted."
+      - id: b
+        text: "`core` migrated the database schema at start, and Helm does not revert the database."
+        explanation: "Correct. The old version may not match the new schema."
+      - id: c
+        text: "Rollback only works once per release."
+        explanation: "Not correct. You can roll back many times."
+      - id: d
+        text: "The `secretKey` is regenerated on rollback."
+        explanation: "Not correct. The key stays the same."
+    correct_option: b
+    explanation: "Correct. The old version may not match the new schema."

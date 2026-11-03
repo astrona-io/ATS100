@@ -25,6 +25,10 @@ The playground holds Harbor 2.15.4 with the project `inventory`, three artifacts
 3. Everyday Commands And Output Formats
 4. Summary
 
+### 2. Manage Projects, Members And Artifacts With The Harbor CLI
+
+This module has four parts, a graded lab after the part on tags, and a summary. It creates projects and members from the command line, removes tags safely and explains quotas. Its lab creates a project, adds a developer and deletes a tag. Work it after module 1.
+
 ## Section capstone: Build A Repository Report With The Harbor CLI
 
 The capstone asks for a report of every artifact in `inventory` with its digest, made with read-only rights in a context of its own, and checked against what Harbor stores. Work it after the module lab.

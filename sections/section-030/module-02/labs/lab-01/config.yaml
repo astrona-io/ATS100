@@ -1,0 +1,60 @@
+# Create A Project And Clean Up Tags With The Harbor CLI
+# Astrona graded lab. Schema: internal/config.LabConfig.
+
+metadata:
+  name: "ats-100-lab-030-02"
+  docs:
+    guide: "solution.md"
+    solution: "solution.md"
+    question: "question.md"
+    examQuestion: "question.md"
+    prerequisites: "prerequisites.md"
+bootstrap:
+  init:
+    - name: "install-harbor"
+      description: "Installs Helm 3.22.1, Harbor 2.15.4 (chart 1.19.4) and the workstation pod"
+      type: "file"
+      source: "bootstrap/01-install-harbor.sh"
+    - name: "ats-100-lab-030-02-setup"
+      description: "Creates the starting state the task works from"
+      type: "file"
+      source: "bootstrap/02-seed-state.sh"
+testing:
+  init:
+    - name: "wait-for-harbor"
+      description: "Waits until Harbor answers from the workstation"
+      type: "file"
+      source: "testing/wait-for-harbor.sh"
+    - name: "reference-solution"
+      description: "The remediation a correct learner performs; used by `astrona test`"
+      type: "file"
+      source: "solution/apply.sh"
+validation:
+  scripts:
+    - name: "validate-project-shipping"
+      description: "Confirms the private project shipping exists"
+      type: "file"
+      source: "validation/validate-project-shipping.sh"
+    - name: "validate-member-role"
+      description: "Confirms shipping-dev is a Developer in shipping"
+      type: "file"
+      source: "validation/validate-member-role.sh"
+    - name: "validate-tag-cleanup"
+      description: "Confirms the tag old is gone and 6.15.0 is kept"
+      type: "file"
+      source: "validation/validate-tag-cleanup.sh"
+teardown:
+  keepCluster: false
+runtime:
+  kind:
+    preloadImages:
+      - alpine:3.22
+      - docker.io/goharbor/harbor-core:v2.15.4
+      - docker.io/goharbor/harbor-db:v2.15.4
+      - docker.io/goharbor/harbor-jobservice:v2.15.4
+      - docker.io/goharbor/harbor-portal:v2.15.4
+      - docker.io/goharbor/harbor-registryctl:v2.15.4
+      - docker.io/goharbor/nginx-photon:v2.15.4
+      - docker.io/goharbor/registry-photon:v2.15.4
+      - docker.io/goharbor/trivy-adapter-photon:v2.15.4
+      - docker.io/valkey/valkey:8.1.10-alpine

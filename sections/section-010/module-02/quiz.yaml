@@ -1,0 +1,244 @@
+schema_version: 1
+kind: question_bank
+id: ats100-010-m02
+course_id: ATS100
+exam_code: HARBOR
+status: draft
+provenance: Original practice material written for this course; not official exam questions.
+scope:
+  type: module
+  id: section-010-module-02
+  title: "The OCI Distribution Model"
+placement:
+  position: after
+  reading: sections/section-010/module-02/course-05-summary.md
+questions:
+  - id: ats100-010-m02-q01
+    type: single_choice
+    difficulty: beginner
+    learning_objective: "Define a blob"
+    source_readings:
+      - sections/section-010/module-02/course-01-manifests-and-blobs.md
+    prompt: "What is a blob in a registry?"
+    options:
+      - id: a
+        text: "A file addressed by the SHA-256 digest of its bytes, such as a layer or an image configuration."
+        explanation: "Correct. Blobs are stored under their own hash."
+      - id: b
+        text: "A JSON document that lists the layers of an image."
+        explanation: "Not correct. That describes a manifest."
+      - id: c
+        text: "A movable name for an image."
+        explanation: "Not correct. That describes a tag."
+      - id: d
+        text: "A user group in a Harbor project."
+        explanation: "Not correct. Harbor groups are not blobs."
+    correct_option: a
+    explanation: "Correct. Blobs are stored under their own hash."
+
+  - id: ats100-010-m02-q02
+    type: single_choice
+    difficulty: beginner
+    learning_objective: "Define a tag"
+    source_readings:
+      - sections/section-010/module-02/course-01-manifests-and-blobs.md
+    prompt: "What is a tag?"
+    options:
+      - id: a
+        text: "The SHA-256 hash of the manifest."
+        explanation: "Not correct. That is the digest."
+      - id: b
+        text: "A name in a repository that points at the digest of one manifest and can be moved."
+        explanation: "Correct. The digest is the exact identity."
+      - id: c
+        text: "A layer of the image file system."
+        explanation: "Not correct. Layers are blobs."
+      - id: d
+        text: "A Harbor project role."
+        explanation: "Not correct. Roles are not tags."
+    correct_option: b
+    explanation: "Correct. The digest is the exact identity."
+
+  - id: ats100-010-m02-q03
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Read a manifest"
+    source_readings:
+      - sections/section-010/module-02/course-01-manifests-and-blobs.md
+    prompt: "Which entries does an image manifest list?"
+    options:
+      - id: a
+        text: "Only the tags of the repository."
+        explanation: "Not correct. Tags are not stored in the manifest."
+      - id: b
+        text: "The users allowed to pull."
+        explanation: "Not correct. Access control lives in Harbor, not in the manifest."
+      - id: c
+        text: "A config blob and a list of layer blobs, each with a media type, a digest and a size."
+        explanation: "Correct. This is the structure of an image manifest."
+      - id: d
+        text: "The Harbor project quota."
+        explanation: "Not correct. Quota is a project setting in Harbor."
+    correct_option: c
+    explanation: "Correct. This is the structure of an image manifest."
+
+  - id: ats100-010-m02-q04
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Verify a blob"
+    source_readings:
+      - sections/section-010/module-02/course-01-manifests-and-blobs.md
+    prompt: "How can you prove that a blob you downloaded is unchanged?"
+    options:
+      - id: a
+        text: "Compare its size with the tag name."
+        explanation: "Not correct. A tag has no size."
+      - id: b
+        text: "Check that `core` is healthy."
+        explanation: "Not correct. Health says nothing about one blob."
+      - id: c
+        text: "Run `oras login` again."
+        explanation: "Not correct. Signing in does not check content."
+      - id: d
+        text: "Hash its bytes with SHA-256 and compare the result with the digest it was fetched by."
+        explanation: "Correct. The digest is the hash of the content."
+    correct_option: d
+    explanation: "Correct. The digest is the hash of the content."
+
+  - id: ats100-010-m02-q05
+    type: single_choice
+    difficulty: beginner
+    learning_objective: "Recognise an image index"
+    source_readings:
+      - sections/section-010/module-02/course-02-image-indexes.md
+    prompt: "What does an image index list?"
+    options:
+      - id: a
+        text: "Image manifests, each with a platform such as linux/amd64 or linux/arm64."
+        explanation: "Correct. The client picks the entry for its own platform."
+      - id: b
+        text: "Only blobs, one per layer."
+        explanation: "Not correct. That is an image manifest."
+      - id: c
+        text: "Harbor projects."
+        explanation: "Not correct. Projects are not in an index."
+      - id: d
+        text: "Vulnerabilities."
+        explanation: "Not correct. Scan results are not in an index."
+    correct_option: a
+    explanation: "Correct. The client picks the entry for its own platform."
+
+  - id: ats100-010-m02-q06
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Pick one platform exactly"
+    source_readings:
+      - sections/section-010/module-02/course-02-image-indexes.md
+    prompt: "You must deploy exactly the linux/amd64 image that was tested. What is the safest reference?"
+    options:
+      - id: a
+        text: "The tag `latest`."
+        explanation: "Not correct. A tag can move to a new index."
+      - id: b
+        text: "The repository followed by `@sha256:` and the digest of the linux/amd64 image manifest."
+        explanation: "Correct. A digest never moves."
+      - id: c
+        text: "The tag of the index."
+        explanation: "Not correct. It can resolve to another platform on another machine."
+      - id: d
+        text: "The project name only."
+        explanation: "Not correct. A project is not an image reference."
+    correct_option: b
+    explanation: "Correct. A digest never moves."
+
+  - id: ats100-010-m02-q07
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Use the subject field"
+    source_readings:
+      - sections/section-010/module-02/course-03-referrers.md
+    prompt: "What does the `subject` field of a manifest do?"
+    options:
+      - id: a
+        text: "It names the user who pushed the manifest."
+        explanation: "Not correct. The field holds a digest."
+      - id: b
+        text: "It sets the retention of the tag."
+        explanation: "Not correct. Retention is a Harbor policy."
+      - id: c
+        text: "It names the digest of another manifest, which makes this manifest a referrer of it."
+        explanation: "Correct. The target manifest does not change."
+      - id: d
+        text: "It selects the platform of an index entry."
+        explanation: "Not correct. Platforms are set in an index."
+    correct_option: c
+    explanation: "Correct. The target manifest does not change."
+
+  - id: ats100-010-m02-q08
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Attach a file"
+    source_readings:
+      - sections/section-010/module-02/course-03-referrers.md
+    prompt: "Which command stores a file so that it refers to an existing image?"
+    options:
+      - id: a
+        text: "`oras push <repository>:notes <file>`."
+        explanation: "Not correct. That makes an unrelated artifact."
+      - id: b
+        text: "`regctl image copy` of the file."
+        explanation: "Not correct. `image copy` copies images between registries."
+      - id: c
+        text: "`kubectl cp` of the file."
+        explanation: "Not correct. That copies files into a pod, not into Harbor."
+      - id: d
+        text: "`oras attach --artifact-type <type> <image reference> <file>`."
+        explanation: "Correct. It sets the subject of the new manifest."
+    correct_option: d
+    explanation: "Correct. It sets the subject of the new manifest."
+
+  - id: ats100-010-m02-q09
+    type: single_choice
+    difficulty: advanced
+    learning_objective: "Reason about referrers and tags"
+    source_readings:
+      - sections/section-010/module-02/course-03-referrers.md
+    prompt: "After `oras attach` to the tag `6.15.0`, what happens to the digest the tag points at?"
+    options:
+      - id: a
+        text: "It stays the same, because the image is not changed."
+        explanation: "Correct. Only a new referrer manifest is added."
+      - id: b
+        text: "It changes, because a new manifest was added."
+        explanation: "Not correct. The referrer is a separate manifest."
+      - id: c
+        text: "The tag is deleted."
+        explanation: "Not correct. Attach never deletes tags."
+      - id: d
+        text: "The tag moves to the attached file."
+        explanation: "Not correct. The tag keeps pointing at the image."
+    correct_option: a
+    explanation: "Correct. Only a new referrer manifest is added."
+
+  - id: ats100-010-m02-q10
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Build a Harbor API path"
+    source_readings:
+      - sections/section-010/module-02/course-04-data-model-and-api.md
+    prompt: "How is the repository `charts/podinfo` written in a Harbor REST API path?"
+    options:
+      - id: a
+        text: "As `charts/podinfo`."
+        explanation: "Not correct. A raw slash splits the path."
+      - id: b
+        text: "As `charts%252Fpodinfo`, with the slash encoded twice."
+        explanation: "Correct. Harbor decodes the segment twice."
+      - id: c
+        text: "As `charts%2Fpodinfo`."
+        explanation: "Not correct. One encoding returns not found."
+      - id: d
+        text: "As `charts.podinfo`."
+        explanation: "Not correct. Harbor has no dot form."
+    correct_option: b
+    explanation: "Correct. Harbor decodes the segment twice."

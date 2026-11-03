@@ -1,0 +1,244 @@
+schema_version: 1
+kind: question_bank
+id: ats100-030-m02
+course_id: ATS100
+exam_code: HARBOR
+status: draft
+provenance: Original practice material written for this course; not official exam questions.
+scope:
+  type: module
+  id: section-030-module-02
+  title: "Manage Projects, Members And Artifacts With The Harbor CLI"
+placement:
+  position: after
+  reading: sections/section-030/module-02/course-05-summary.md
+questions:
+  - id: ats100-030-m02-q01
+    type: single_choice
+    difficulty: beginner
+    learning_objective: "Create a project"
+    source_readings:
+      - sections/section-030/module-02/course-01-projects.md
+    prompt: "Why does `harbor project create shipping` fail in a script?"
+    options:
+      - id: a
+        text: "`--storage-limit` is required; pass `--storage-limit=-1` for no quota."
+        explanation: "Correct. The CLI cannot ask for it without a terminal."
+      - id: b
+        text: "The project name is too long."
+        explanation: "Not correct. The name is valid."
+      - id: c
+        text: "Projects can only be created in the portal."
+        explanation: "Not correct. The CLI creates projects."
+      - id: d
+        text: "`--public` is required."
+        explanation: "Not correct. Projects are private by default."
+    correct_option: a
+    explanation: "Correct. The CLI cannot ask for it without a terminal."
+
+  - id: ats100-030-m02-q02
+    type: single_choice
+    difficulty: beginner
+    learning_objective: "Read project access"
+    source_readings:
+      - sections/section-030/module-02/course-01-projects.md
+    prompt: "What does the flag `--public` do on `harbor project create`?"
+    options:
+      - id: a
+        text: "It makes the project visible only to admins."
+        explanation: "Not correct. That is the opposite."
+      - id: b
+        text: "It lets anyone pull from the project without signing in."
+        explanation: "Correct. The default is private."
+      - id: c
+        text: "It removes the quota."
+        explanation: "Not correct. The quota is set by `--storage-limit`."
+      - id: d
+        text: "It enables vulnerability scanning."
+        explanation: "Not correct. Scanning is a separate setting."
+    correct_option: b
+    explanation: "Correct. The default is private."
+
+  - id: ats100-030-m02-q03
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Script project output"
+    source_readings:
+      - sections/section-030/module-02/course-01-projects.md
+    prompt: "Where are the projects in the output of `harbor project list -o json`?"
+    options:
+      - id: a
+        text: "At the top level of the JSON."
+        explanation: "Not correct. The result is an object."
+      - id: b
+        text: "In a field named `projects`."
+        explanation: "Not correct. The field is `Payload`."
+      - id: c
+        text: "In the `Payload` array."
+        explanation: "Correct. List commands wrap the items in `Payload`."
+      - id: d
+        text: "Only in the table output."
+        explanation: "Not correct. JSON includes them."
+    correct_option: c
+    explanation: "Correct. List commands wrap the items in `Payload`."
+
+  - id: ats100-030-m02-q04
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Delete a project"
+    source_readings:
+      - sections/section-030/module-02/course-01-projects.md
+    prompt: "What happens if you delete a project that still holds repositories?"
+    options:
+      - id: a
+        text: "Harbor deletes everything in it."
+        explanation: "Not correct. It does not."
+      - id: b
+        text: "Harbor moves the repositories to `library`."
+        explanation: "Not correct. No such move exists."
+      - id: c
+        text: "Harbor keeps the project but hides it."
+        explanation: "Not correct. It simply refuses."
+      - id: d
+        text: "Harbor refuses until the repositories are removed."
+        explanation: "Correct. A non-empty project is protected."
+    correct_option: d
+    explanation: "Correct. A non-empty project is protected."
+
+  - id: ats100-030-m02-q05
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Apply the role offset"
+    source_readings:
+      - sections/section-030/module-02/course-02-users-members-roles.md
+    prompt: "Which command makes `shipping-dev` a Developer in `shipping` with CLI v0.0.27?"
+    options:
+      - id: a
+        text: "`harbor project member create shipping --username shipping-dev --roleid 1`"
+        explanation: "Correct. The CLI adds 1 to the number, giving role 2."
+      - id: b
+        text: "`... --roleid 2`"
+        explanation: "Not correct. That produces role 3, a Guest."
+      - id: c
+        text: "`... --roleid 0`"
+        explanation: "Not correct. That is not a valid role number."
+      - id: d
+        text: "`... --role developer`"
+        explanation: "Not correct. The flag takes a number."
+    correct_option: a
+    explanation: "Correct. The CLI adds 1 to the number, giving role 2."
+
+  - id: ats100-030-m02-q06
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Verify a role"
+    source_readings:
+      - sections/section-030/module-02/course-02-users-members-roles.md
+    prompt: "How do you check the role a member really received?"
+    options:
+      - id: a
+        text: "Trust the number passed to `--roleid`."
+        explanation: "Not correct. The CLI offsets the number."
+      - id: b
+        text: "Read `role_name` from the REST API member list of the project."
+        explanation: "Correct. The API shows the granted role."
+      - id: c
+        text: "Read the CLI help text."
+        explanation: "Not correct. Help does not show the granted role."
+      - id: d
+        text: "Log in as the member and guess."
+        explanation: "Not correct. That does not name the role."
+    correct_option: b
+    explanation: "Correct. The API shows the granted role."
+
+  - id: ats100-030-m02-q07
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Delete a tag only"
+    source_readings:
+      - sections/section-030/module-02/course-03-repositories-artifacts-tags.md
+    prompt: "Which command removes the tag `old` and keeps the image?"
+    options:
+      - id: a
+        text: "`harbor artifact delete warehouse/podinfo:old`"
+        explanation: "Not correct. That removes the artifact and all its tags."
+      - id: b
+        text: "`harbor repo delete warehouse/podinfo`"
+        explanation: "Not correct. That removes the whole repository."
+      - id: c
+        text: "`harbor artifact tags delete warehouse/podinfo/6.15.0 old`"
+        explanation: "Correct. It removes one tag reference."
+      - id: d
+        text: "`harbor project delete warehouse`"
+        explanation: "Not correct. That targets the whole project."
+    correct_option: c
+    explanation: "Correct. It removes one tag reference."
+
+  - id: ats100-030-m02-q08
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Read artifact references"
+    source_readings:
+      - sections/section-030/module-02/course-03-repositories-artifacts-tags.md
+    prompt: "Two tags point at one digest. How many copies of the image does Harbor store?"
+    options:
+      - id: a
+        text: "Two, one per tag."
+        explanation: "Not correct. Tags do not copy data."
+      - id: b
+        text: "None until you pull."
+        explanation: "Not correct. The data is stored."
+      - id: c
+        text: "One per user."
+        explanation: "Not correct. Storage is per artifact."
+      - id: d
+        text: "One; both tags reference the same artifact."
+        explanation: "Correct. Tags are names for a digest."
+    correct_option: d
+    explanation: "Correct. Tags are names for a digest."
+
+  - id: ats100-030-m02-q09
+    type: single_choice
+    difficulty: advanced
+    learning_objective: "Explain delayed space"
+    source_readings:
+      - sections/section-030/module-02/course-04-deletion-and-quotas.md
+    prompt: "You deleted several tags and `harbor quota list` is unchanged. What is a likely cause?"
+    options:
+      - id: a
+        text: "Other artifacts share the layers, or the blobs wait for garbage collection."
+        explanation: "Correct. Only unreferenced blobs are freed."
+      - id: b
+        text: "The delete failed silently."
+        explanation: "Not correct. A failed delete reports an error."
+      - id: c
+        text: "Quotas update once a day only."
+        explanation: "Not correct. Usage follows the references."
+      - id: d
+        text: "Tags count double in quota."
+        explanation: "Not correct. Layers count once."
+    correct_option: a
+    explanation: "Correct. Only unreferenced blobs are freed."
+
+  - id: ats100-030-m02-q10
+    type: single_choice
+    difficulty: advanced
+    learning_objective: "Choose a safe cleanup"
+    source_readings:
+      - sections/section-030/module-02/course-04-deletion-and-quotas.md
+    prompt: "Which approach removes old tags most safely over time?"
+    options:
+      - id: a
+        text: "A loop of `artifact delete` over every artifact."
+        explanation: "Not correct. One wrong filter removes real images."
+      - id: b
+        text: "A tag retention rule on the project."
+        explanation: "Correct. A rule is reviewable and repeatable."
+      - id: c
+        text: "Deleting the project and recreating it."
+        explanation: "Not correct. That loses all content."
+      - id: d
+        text: "Lowering the quota until pushes fail."
+        explanation: "Not correct. That blocks work without cleaning."
+    correct_option: b
+    explanation: "Correct. A rule is reviewable and repeatable."
