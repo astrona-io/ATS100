@@ -4,7 +4,7 @@ A fresh Harbor installation answers in the browser, and yet the first push fails
 
 The `harbor-helm` chart is the supported way to run Harbor on Kubernetes. Helm is the package manager for Kubernetes: it installs a **chart**, a set of templated manifests, with a set of **values** you choose, and it records each change as a numbered **revision** of the **release**. This module reads and changes those values on a running installation.
 
-The module has three parts. **The harbor-helm Values That Matter** walks through the values that decide how Harbor is reached, and shows the token step failing when `externalURL` is wrong; a graded lab follows it. **TLS Certificates And Trust** covers where Harbor's certificate comes from and how a client learns to trust it. **The Docker Compose Installers And harbor.yml** maps the same settings to the installers used on a single virtual machine.
+The module has four parts. **The harbor-helm Values That Matter** walks through the values that decide how Harbor is reached, and shows the token step failing when `externalURL` is wrong; a graded lab follows it. **TLS Certificates And Trust** covers where Harbor's certificate comes from and how a client learns to trust it. **The Docker Compose Installers And harbor.yml** maps the same settings to the installers used on a single virtual machine. **Verifying The Installation** gives the checks to run after every install or change.
 
 ## Learning objectives
 
@@ -16,6 +16,7 @@ After this module you can:
 - Choose a TLS certificate source: `auto`, `secret` or `none`.
 - Make a client trust Harbor's certificate authority, and set `caSecretName` so Harbor offers it for download.
 - Write the `hostname`, `https` and `harbor_admin_password` settings of `harbor.yml`, and run `./install.sh --with-trivy`.
+- Verify an installation with pods, the health API, the system information, the `/v2/` header and a real push.
 
 ## Before you start
 

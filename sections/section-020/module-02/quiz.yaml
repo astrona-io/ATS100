@@ -1,0 +1,244 @@
+schema_version: 1
+kind: question_bank
+id: ats100-020-m02
+course_id: ATS100
+exam_code: HARBOR
+status: draft
+provenance: Original practice material written for this course; not official exam questions.
+scope:
+  type: module
+  id: section-020-module-02
+  title: "Exposure, Persistence And Secrets In The Harbor Chart"
+placement:
+  position: after
+  reading: sections/section-020/module-02/course-05-summary.md
+questions:
+  - id: ats100-020-m02-q01
+    type: single_choice
+    difficulty: beginner
+    learning_objective: "Choose an expose type"
+    source_readings:
+      - sections/section-020/module-02/course-01-exposure-and-external-url.md
+    prompt: "Which `expose.type` makes Harbor reachable only inside the cluster?"
+    options:
+      - id: a
+        text: "`clusterIP`."
+        explanation: "Correct. The Service has a cluster address only."
+      - id: b
+        text: "`loadBalancer`."
+        explanation: "Not correct. It gets an external address."
+      - id: c
+        text: "`nodePort`."
+        explanation: "Not correct. It opens a port on every node."
+      - id: d
+        text: "`ingress`."
+        explanation: "Not correct. It routes outside traffic."
+    correct_option: a
+    explanation: "Correct. The Service has a cluster address only."
+
+  - id: ats100-020-m02-q02
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Explain externalURL"
+    source_readings:
+      - sections/section-020/module-02/course-01-exposure-and-external-url.md
+    prompt: "What does `externalURL` control?"
+    options:
+      - id: a
+        text: "The size of the registry volume."
+        explanation: "Not correct. That is a persistence setting."
+      - id: b
+        text: "The address Harbor tells clients to use, including the token realm."
+        explanation: "Correct. The realm in `/v2/` comes from it."
+      - id: c
+        text: "The number of core replicas."
+        explanation: "Not correct. It sets no replicas."
+      - id: d
+        text: "The administrator password."
+        explanation: "Not correct. That is `harborAdminPassword`."
+    correct_option: b
+    explanation: "Correct. The realm in `/v2/` comes from it."
+
+  - id: ats100-020-m02-q03
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Predict a wrong URL"
+    source_readings:
+      - sections/section-020/module-02/course-01-exposure-and-external-url.md
+    prompt: "`externalURL` names an unreachable host, but the portal still opens. What fails?"
+    options:
+      - id: a
+        text: "Nothing; clients ignore it."
+        explanation: "Not correct. They follow the realm."
+      - id: b
+        text: "Only the health API."
+        explanation: "Not correct. Health is unaffected."
+      - id: c
+        text: "`docker login` and pushes, which follow the realm to the wrong host."
+        explanation: "Correct. Browsers already have a working address."
+      - id: d
+        text: "Only Trivy scans."
+        explanation: "Not correct. Scanning is unrelated."
+    correct_option: c
+    explanation: "Correct. Browsers already have a working address."
+
+  - id: ats100-020-m02-q04
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Find the realm"
+    source_readings:
+      - sections/section-020/module-02/course-01-exposure-and-external-url.md
+    prompt: "Where do you see the token realm that clients use?"
+    options:
+      - id: a
+        text: "In the output of `kubectl get nodes`."
+        explanation: "Not correct. Nodes do not show it."
+      - id: b
+        text: "In the `harbor-tls` Secret."
+        explanation: "Not correct. It holds the certificate."
+      - id: c
+        text: "In the Helm chart version."
+        explanation: "Not correct. The version is unrelated."
+      - id: d
+        text: "In the `WWW-Authenticate` header of the answer from `/v2/`."
+        explanation: "Correct. The header names the realm."
+    correct_option: d
+    explanation: "Correct. The header names the realm."
+
+  - id: ats100-020-m02-q05
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Judge persistence"
+    source_readings:
+      - sections/section-020/module-02/course-02-persistence-and-storage.md
+    prompt: "What does `persistence.enabled: false` mean for a replaced database pod?"
+    options:
+      - id: a
+        text: "Its data is lost, because the pod uses temporary storage."
+        explanation: "Correct. No claim keeps the data."
+      - id: b
+        text: "The data moves to Redis."
+        explanation: "Not correct. Redis does not take over."
+      - id: c
+        text: "The data is kept in the Helm release."
+        explanation: "Not correct. Helm stores no data."
+      - id: d
+        text: "Nothing; the data is on the registry volume."
+        explanation: "Not correct. The database has its own storage."
+    correct_option: a
+    explanation: "Correct. No claim keeps the data."
+
+  - id: ats100-020-m02-q06
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Pick object storage"
+    source_readings:
+      - sections/section-020/module-02/course-02-persistence-and-storage.md
+    prompt: "Which setting moves image layers to S3?"
+    options:
+      - id: a
+        text: "`expose.type: s3`"
+        explanation: "Not correct. Expose controls access."
+      - id: b
+        text: "`persistence.imageChartStorage.type: s3`"
+        explanation: "Correct. It selects the storage backend."
+      - id: c
+        text: "`externalURL: s3://bucket`"
+        explanation: "Not correct. That is an address, not storage."
+      - id: d
+        text: "`secretKey: s3`"
+        explanation: "Not correct. That is the encryption key."
+    correct_option: b
+    explanation: "Correct. It selects the storage backend."
+
+  - id: ats100-020-m02-q07
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Handle the default key"
+    source_readings:
+      - sections/section-020/module-02/course-03-secrets-and-credentials.md
+    prompt: "What is wrong with the chart default `secretKey`?"
+    options:
+      - id: a
+        text: "It is too long."
+        explanation: "Not correct. It must be 16 characters."
+      - id: b
+        text: "It changes on every upgrade."
+        explanation: "Not correct. It is fixed."
+      - id: c
+        text: "It is a public fixed string, so every installation that keeps it shares one key."
+        explanation: "Correct. Set your own before the first start."
+      - id: d
+        text: "It is stored in `redis`."
+        explanation: "Not correct. It is a chart value."
+    correct_option: c
+    explanation: "Correct. Set your own before the first start."
+
+  - id: ats100-020-m02-q08
+    type: single_choice
+    difficulty: advanced
+    learning_objective: "Change a key later"
+    source_readings:
+      - sections/section-020/module-02/course-03-secrets-and-credentials.md
+    prompt: "What happens if `secretKey` is changed on a running installation?"
+    options:
+      - id: a
+        text: "Nothing; Harbor re-encrypts them."
+        explanation: "Not correct. It does not."
+      - id: b
+        text: "All images are deleted."
+        explanation: "Not correct. Blobs are untouched."
+      - id: c
+        text: "Only new users are affected."
+        explanation: "Not correct. Stored values break."
+      - id: d
+        text: "Stored credentials in the database can no longer be decrypted."
+        explanation: "Correct. They were encrypted with the old key."
+    correct_option: d
+    explanation: "Correct. They were encrypted with the old key."
+
+  - id: ats100-020-m02-q09
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Apply a change"
+    source_readings:
+      - sections/section-020/module-02/course-04-changing-settings-safely.md
+    prompt: "Which command keeps your other values when you change `externalURL`?"
+    options:
+      - id: a
+        text: "`helm upgrade harbor harbor/harbor --reuse-values --set externalURL=...`"
+        explanation: "Correct. `--reuse-values` starts from the last values."
+      - id: b
+        text: "`helm upgrade harbor harbor/harbor --set externalURL=...`"
+        explanation: "Not correct. Chart defaults replace the rest."
+      - id: c
+        text: "`helm uninstall harbor`"
+        explanation: "Not correct. That removes the release."
+      - id: d
+        text: "`kubectl edit cm harbor-core`"
+        explanation: "Not correct. Helm overwrites it later."
+    correct_option: a
+    explanation: "Correct. `--reuse-values` starts from the last values."
+
+  - id: ats100-020-m02-q10
+    type: single_choice
+    difficulty: advanced
+    learning_objective: "Check after a change"
+    source_readings:
+      - sections/section-020/module-02/course-04-changing-settings-safely.md
+    prompt: "Which check proves an `externalURL` change worked for clients?"
+    options:
+      - id: a
+        text: "`helm upgrade` exited with 0."
+        explanation: "Not correct. It does not prove the client path."
+      - id: b
+        text: "The realm in the `/v2/` header and a successful push."
+        explanation: "Correct. They follow the path clients use."
+      - id: c
+        text: "The portal page loads."
+        explanation: "Not correct. The portal can work with a wrong realm."
+      - id: d
+        text: "`kubectl get nodes` is Ready."
+        explanation: "Not correct. Nodes say nothing about Harbor."
+    correct_option: b
+    explanation: "Correct. They follow the path clients use."

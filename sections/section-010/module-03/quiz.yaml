@@ -1,0 +1,244 @@
+schema_version: 1
+kind: question_bank
+id: ats100-010-m03
+course_id: ATS100
+exam_code: HARBOR
+status: draft
+provenance: Original practice material written for this course; not official exam questions.
+scope:
+  type: module
+  id: section-010-module-03
+  title: "Where Harbor Keeps State: Storage, Logs And Backups"
+placement:
+  position: after
+  reading: sections/section-010/module-03/course-05-summary.md
+questions:
+  - id: ats100-010-m03-q01
+    type: single_choice
+    difficulty: beginner
+    learning_objective: "Name what the database keeps"
+    source_readings:
+      - sections/section-010/module-03/course-01-what-each-component-keeps.md
+    prompt: "Which component keeps users, projects and artifact records?"
+    options:
+      - id: a
+        text: "`database` (PostgreSQL)."
+        explanation: "Correct. Records are stored there."
+      - id: b
+        text: "`registry`."
+        explanation: "Not correct. It keeps blobs and manifests."
+      - id: c
+        text: "`portal`."
+        explanation: "Not correct. It keeps no data."
+      - id: d
+        text: "`trivy`."
+        explanation: "Not correct. It keeps vulnerability data."
+    correct_option: a
+    explanation: "Correct. Records are stored there."
+
+  - id: ats100-010-m03-q02
+    type: single_choice
+    difficulty: beginner
+    learning_objective: "Name what the registry keeps"
+    source_readings:
+      - sections/section-010/module-03/course-01-what-each-component-keeps.md
+    prompt: "Where are the bytes of an image layer stored?"
+    options:
+      - id: a
+        text: "In the database."
+        explanation: "Not correct. The database keeps records."
+      - id: b
+        text: "In the registry storage, by default a volume."
+        explanation: "Correct. The registry keeps blobs."
+      - id: c
+        text: "In `redis`."
+        explanation: "Not correct. Redis keeps queues and caches."
+      - id: d
+        text: "In `core`."
+        explanation: "Not correct. `core` keeps nothing."
+    correct_option: b
+    explanation: "Correct. The registry keeps blobs."
+
+  - id: ats100-010-m03-q03
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Tell stateful from stateless"
+    source_readings:
+      - sections/section-010/module-03/course-01-what-each-component-keeps.md
+    prompt: "Which pair of components keeps no data of its own?"
+    options:
+      - id: a
+        text: "`database` and `registry`."
+        explanation: "Not correct. Both keep essential data."
+      - id: b
+        text: "`redis` and `trivy`."
+        explanation: "Not correct. Both have volumes."
+      - id: c
+        text: "`core` and `portal`."
+        explanation: "Correct. They can be restarted safely."
+      - id: d
+        text: "`jobservice` and `database`."
+        explanation: "Not correct. Both keep data."
+    correct_option: c
+    explanation: "Correct. They can be restarted safely."
+
+  - id: ats100-010-m03-q04
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Stop a stateful component safely"
+    source_readings:
+      - sections/section-010/module-03/course-02-what-survives-a-restart.md
+    prompt: "How do you stop the database and keep its data?"
+    options:
+      - id: a
+        text: "Delete the PersistentVolumeClaim."
+        explanation: "Not correct. That removes the data."
+      - id: b
+        text: "Run `helm uninstall`."
+        explanation: "Not correct. That removes the release."
+      - id: c
+        text: "Delete the Secret `harbor-core`."
+        explanation: "Not correct. That breaks the configuration, not the database."
+      - id: d
+        text: "Scale `statefulset/harbor-database` to 0 replicas."
+        explanation: "Correct. The volume claim stays."
+    correct_option: d
+    explanation: "Correct. The volume claim stays."
+
+  - id: ats100-010-m03-q05
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Predict a failure"
+    source_readings:
+      - sections/section-010/module-03/course-02-what-survives-a-restart.md
+    prompt: "What happens to sign-in when the database is stopped?"
+    options:
+      - id: a
+        text: "It fails, because `core` cannot read users without the database."
+        explanation: "Correct. `core` depends on the database."
+      - id: b
+        text: "It works from a cache."
+        explanation: "Not correct. Records are not cached for sign-in."
+      - id: c
+        text: "Only the portal page fails."
+        explanation: "Not correct. The API fails too."
+      - id: d
+        text: "It switches to `redis`."
+        explanation: "Not correct. Redis does not hold users."
+    correct_option: a
+    explanation: "Correct. `core` depends on the database."
+
+  - id: ats100-010-m03-q06
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Pick the first check"
+    source_readings:
+      - sections/section-010/module-03/course-03-logs-and-health.md
+    prompt: "Harbor misbehaves. What is the best first look?"
+    options:
+      - id: a
+        text: "Delete all pods."
+        explanation: "Not correct. That hides the cause."
+      - id: b
+        text: "The health API, which names the unhealthy component."
+        explanation: "Correct. It narrows the search."
+      - id: c
+        text: "Reinstall the release."
+        explanation: "Not correct. That is a last resort."
+      - id: d
+        text: "Read the whole `core` log."
+        explanation: "Not correct. Too broad as a first step."
+    correct_option: b
+    explanation: "Correct. It narrows the search."
+
+  - id: ats100-010-m03-q07
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Read a crash"
+    source_readings:
+      - sections/section-010/module-03/course-03-logs-and-health.md
+    prompt: "A container crashed and restarted. Which flag shows the log of the crashed one?"
+    options:
+      - id: a
+        text: "`kubectl logs -f`."
+        explanation: "Not correct. That follows the new container."
+      - id: b
+        text: "`kubectl logs --tail=0`."
+        explanation: "Not correct. That shows nothing."
+      - id: c
+        text: "`kubectl logs --previous`."
+        explanation: "Correct. It reads the previous container."
+      - id: d
+        text: "`kubectl get logs`."
+        explanation: "Not correct. That is not a command."
+    correct_option: c
+    explanation: "Correct. It reads the previous container."
+
+  - id: ats100-010-m03-q08
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Dump the database"
+    source_readings:
+      - sections/section-010/module-03/course-04-backing-up-harbor.md
+    prompt: "Which command makes a SQL dump of the Harbor database?"
+    options:
+      - id: a
+        text: "`kubectl -n harbor cp harbor-core`"
+        explanation: "Not correct. That copies files, not a dump."
+      - id: b
+        text: "`helm get values harbor`"
+        explanation: "Not correct. That shows settings only."
+      - id: c
+        text: "`regctl repo ls`"
+        explanation: "Not correct. That lists repositories."
+      - id: d
+        text: "`kubectl -n harbor exec harbor-database-0 -- pg_dump -U postgres registry`"
+        explanation: "Correct. The database is named `registry`."
+    correct_option: d
+    explanation: "Correct. The database is named `registry`."
+
+  - id: ats100-010-m03-q09
+    type: single_choice
+    difficulty: advanced
+    learning_objective: "List a complete backup"
+    source_readings:
+      - sections/section-010/module-03/course-04-backing-up-harbor.md
+    prompt: "Which backup restores a working Harbor?"
+    options:
+      - id: a
+        text: "The database dump, the registry storage, the values file and the Secrets including `secretKey`."
+        explanation: "Correct. Each part is needed."
+      - id: b
+        text: "Only the database dump."
+        explanation: "Not correct. Blobs would be missing."
+      - id: c
+        text: "Only the registry storage."
+        explanation: "Not correct. Records would be missing."
+      - id: d
+        text: "Only the Helm chart."
+        explanation: "Not correct. The chart holds none of your data."
+    correct_option: a
+    explanation: "Correct. Each part is needed."
+
+  - id: ats100-010-m03-q10
+    type: single_choice
+    difficulty: advanced
+    learning_objective: "Explain the secretKey"
+    source_readings:
+      - sections/section-010/module-03/course-04-backing-up-harbor.md
+    prompt: "Why must the `secretKey` be backed up?"
+    options:
+      - id: a
+        text: "It is the admin password."
+        explanation: "Not correct. It is not."
+      - id: b
+        text: "Stored credentials are encrypted with it, and a new key cannot decrypt them."
+        explanation: "Correct. A restore needs the same key."
+      - id: c
+        text: "It signs every image."
+        explanation: "Not correct. Signing uses other keys."
+      - id: d
+        text: "It names the database."
+        explanation: "Not correct. The database is `registry`."
+    correct_option: b
+    explanation: "Correct. A restore needs the same key."

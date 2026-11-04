@@ -100,8 +100,11 @@ modules:
         title: "Images, Helm Charts And Other OCI Artifacts"
         path: sections/section-010/module-01/course-03-oci-artifacts.md
       - type: reading
+        title: "How Clients Get A Token"
+        path: sections/section-010/module-01/course-04-how-clients-get-a-token.md
+      - type: reading
         title: Summary
-        path: sections/section-010/module-01/course-04-summary.md
+        path: sections/section-010/module-01/course-05-summary.md
 
       - type: reading
         title: "The OCI Distribution Model: Manifests, Blobs, Indexes And Referrers"
@@ -142,6 +145,46 @@ modules:
       - type: quiz
         title: "Knowledge Check: The OCI Distribution Model"
         path: sections/section-010/module-02/quiz.yaml
+        pass_score: 70
+      - type: reading
+        title: "Where Harbor Keeps State: Storage, Logs And Backups"
+        path: sections/section-010/module-03/course.md
+      - type: reading
+        title: "What Each Component Keeps"
+        path: sections/section-010/module-03/course-01-what-each-component-keeps.md
+      - type: reading
+        title: "What Survives A Restart"
+        path: sections/section-010/module-03/course-02-what-survives-a-restart.md
+      - type: reading
+        title: Question
+        path: sections/section-010/module-03/labs/lab-01/question.md
+      - type: lab
+        title: "Restore Harbor After Its Database Stopped Lab"
+        path: sections/section-010/module-03/labs/lab-01
+        difficulty: intermediate
+        estimated_duration: 15m
+        topic: architecture
+        task_kind: troubleshooting
+        tags: [harbor-database, statefulset, health, pvc]
+        learning_goals:
+          - Find the stopped component from the health API and the workloads
+          - Start the database again without touching its volume
+          - Prove health and that the pushed image kept its digest
+        resources:
+          - name: "Harbor architecture overview"
+            url: https://goharbor.io/docs/2.15.0/install-config/
+      - type: reading
+        title: "Reading Logs And Health"
+        path: sections/section-010/module-03/course-03-logs-and-health.md
+      - type: reading
+        title: "Backing Up Harbor"
+        path: sections/section-010/module-03/course-04-backing-up-harbor.md
+      - type: reading
+        title: "Summary"
+        path: sections/section-010/module-03/course-05-summary.md
+      - type: quiz
+        title: "Knowledge Check: Where Harbor Keeps State"
+        path: sections/section-010/module-03/quiz.yaml
         pass_score: 70
       - type: reading
         title: Question
@@ -214,9 +257,92 @@ modules:
         title: "The Docker Compose Installers And harbor.yml"
         path: sections/section-020/module-01/course-03-docker-compose-installers.md
       - type: reading
+        title: "Verifying The Installation"
+        path: sections/section-020/module-01/course-04-verifying-the-installation.md
+      - type: reading
         title: Summary
-        path: sections/section-020/module-01/course-04-summary.md
+        path: sections/section-020/module-01/course-05-summary.md
 
+      - type: reading
+        title: "Exposure, Persistence And Secrets In The Harbor Chart"
+        path: sections/section-020/module-02/course.md
+      - type: reading
+        title: "Exposure And The External URL"
+        path: sections/section-020/module-02/course-01-exposure-and-external-url.md
+      - type: reading
+        title: Question
+        path: sections/section-020/module-02/labs/lab-01/question.md
+      - type: lab
+        title: "Fix A Wrong External URL In Harbor Lab"
+        path: sections/section-020/module-02/labs/lab-01
+        difficulty: intermediate
+        estimated_duration: 20m
+        topic: installation
+        task_kind: troubleshooting
+        tags: [harbor-helm, external-url, token-realm, reuse-values]
+        learning_goals:
+          - Find the setting that sends clients to the wrong address
+          - Correct it on the existing release without losing other values
+          - Prove the realm, health and a push
+        resources:
+          - name: "Configure the Harbor YML file and Helm values"
+            url: https://goharbor.io/docs/2.15.0/install-config/harbor-ha-helm/
+      - type: reading
+        title: "Persistence And Storage Backends"
+        path: sections/section-020/module-02/course-02-persistence-and-storage.md
+      - type: reading
+        title: "Secrets And Credentials"
+        path: sections/section-020/module-02/course-03-secrets-and-credentials.md
+      - type: reading
+        title: "Changing Settings Safely"
+        path: sections/section-020/module-02/course-04-changing-settings-safely.md
+      - type: reading
+        title: "Summary"
+        path: sections/section-020/module-02/course-05-summary.md
+      - type: quiz
+        title: "Knowledge Check: Exposure, Persistence And Secrets"
+        path: sections/section-020/module-02/quiz.yaml
+        pass_score: 70
+      - type: reading
+        title: "From harbor.yml To Helm Values"
+        path: sections/section-020/module-03/course.md
+      - type: reading
+        title: "Two Ways To Configure Harbor"
+        path: sections/section-020/module-03/course-01-two-ways-to-configure.md
+      - type: reading
+        title: "Mapping Settings"
+        path: sections/section-020/module-03/course-02-mapping-settings.md
+      - type: reading
+        title: Question
+        path: sections/section-020/module-03/labs/lab-01/question.md
+      - type: lab
+        title: "Move Settings From harbor.yml To Helm Values Lab"
+        path: sections/section-020/module-03/labs/lab-01
+        difficulty: intermediate
+        estimated_duration: 20m
+        topic: installation
+        task_kind: configuration
+        tags: [harbor-helm, harbor-yml, values-yaml, migration]
+        learning_goals:
+          - Read an old harbor.yml and find the settings the release lacks
+          - Find the chart names with helm show values
+          - Apply them with --reuse-values and prove the result
+        resources:
+          - name: "Harbor installation and configuration"
+            url: https://goharbor.io/docs/2.15.0/install-config/
+      - type: reading
+        title: "Settings That Change Meaning"
+        path: sections/section-020/module-03/course-03-settings-that-change-meaning.md
+      - type: reading
+        title: "Moving The Data"
+        path: sections/section-020/module-03/course-04-moving-the-data.md
+      - type: reading
+        title: "Summary"
+        path: sections/section-020/module-03/course-05-summary.md
+      - type: quiz
+        title: "Knowledge Check: From harbor.yml To Helm Values"
+        path: sections/section-020/module-03/quiz.yaml
+        pass_score: 70
       - type: reading
         title: "Upgrading, Rolling Back And Migrating Harbor"
         path: sections/section-020/module-04/course.md
@@ -328,8 +454,11 @@ modules:
         title: "Everyday Commands And Output Formats"
         path: sections/section-030/module-01/course-03-everyday-commands.md
       - type: reading
+        title: "Troubleshooting The CLI"
+        path: sections/section-030/module-01/course-04-troubleshooting-the-cli.md
+      - type: reading
         title: Summary
-        path: sections/section-030/module-01/course-04-summary.md
+        path: sections/section-030/module-01/course-05-summary.md
 
       - type: reading
         title: "Manage Projects, Members And Artifacts With The Harbor CLI"
@@ -370,6 +499,46 @@ modules:
       - type: quiz
         title: "Knowledge Check: Manage Projects, Members And Artifacts With The Harbor CLI"
         path: sections/section-030/module-02/quiz.yaml
+        pass_score: 70
+      - type: reading
+        title: "Script The Harbor CLI"
+        path: sections/section-030/module-03/course.md
+      - type: reading
+        title: "Commands That Never Ask"
+        path: sections/section-030/module-03/course-01-commands-that-never-ask.md
+      - type: reading
+        title: "Loops, jq And Safe Bulk Changes"
+        path: sections/section-030/module-03/course-02-loops-jq-bulk-changes.md
+      - type: reading
+        title: Question
+        path: sections/section-030/module-03/labs/lab-01/question.md
+      - type: lab
+        title: "Remove Old Tags In Bulk With The Harbor CLI Lab"
+        path: sections/section-030/module-03/labs/lab-01
+        difficulty: intermediate
+        estimated_duration: 15m
+        topic: cli
+        task_kind: build
+        tags: [harbor-cli, jq, artifact-tags, scripting]
+        learning_goals:
+          - Select tags from JSON output with jq
+          - Delete only the matching tags in a loop
+          - Keep the release tags and the image digest
+        resources:
+          - name: "Harbor CLI documentation"
+            url: https://goharbor.io/cli-docs/
+      - type: reading
+        title: "Signing In From A Pipeline"
+        path: sections/section-030/module-03/course-03-signing-in-from-a-pipeline.md
+      - type: reading
+        title: "Installing, Pinning And Troubleshooting"
+        path: sections/section-030/module-03/course-04-installing-pinning-troubleshooting.md
+      - type: reading
+        title: "Summary"
+        path: sections/section-030/module-03/course-05-summary.md
+      - type: quiz
+        title: "Knowledge Check: Script The Harbor CLI"
+        path: sections/section-030/module-03/quiz.yaml
         pass_score: 70
       - type: reading
         title: Question

@@ -14,7 +14,7 @@ Most Harbor problems after an installation come from two settings: the address H
 
 ## The learning path
 
-Work through the module in order. It has a landing page, three short parts, a graded lab right after the part it tests, and a summary. The landing page starts the module's playground.
+Work through the module in order. It has a landing page, four short parts, a graded lab right after the part it tests, and a summary. The landing page starts the module's playground.
 
 ### 1. Install And Configure Harbor With harbor-helm
 
@@ -23,11 +23,20 @@ The playground holds Harbor 2.15.4 with the project `inventory`, which already h
 1. The harbor-helm Values That Matter, followed by the lab **Fix The External URL Of A Helm Install**
 2. TLS Certificates And Trust
 3. The Docker Compose Installers And harbor.yml
-4. Summary
+4. Verifying The Installation
+5. Summary
 
-### 2. Upgrading, Rolling Back And Migrating Harbor
+### 2. Exposure, Persistence And Secrets In The Harbor Chart
 
-This module has four parts, a graded lab after the part on failed upgrades, and a summary. It plans and previews a Helm upgrade, reads a failed one, and rolls back. Its lab rolls back a failed registry upgrade. Work it after module 1.
+This module has four parts, a graded lab after the part on exposure, and a summary. It covers the four expose types, the external URL, volumes, object storage and the secrets of the chart. Its lab corrects a wrong external URL without losing other values. Work it after module 1.
+
+### 3. From harbor.yml To Helm Values
+
+This module has four parts, a graded lab after the part on mapping, and a summary. It translates the settings of `harbor.yml` into chart values and plans the move of data. Its lab moves three settings into an existing release. Work it after module 2.
+
+### 4. Upgrading, Rolling Back And Migrating Harbor
+
+This module has four parts, a graded lab after the part on failed upgrades, and a summary. It plans and previews a Helm upgrade, reads a failed one, and rolls back. Its lab rolls back a failed registry upgrade. Work it after module 3.
 
 ## Section capstone: Serve Harbor With Your Own Certificate
 

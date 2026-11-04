@@ -1,0 +1,244 @@
+schema_version: 1
+kind: question_bank
+id: ats100-020-m03
+course_id: ATS100
+exam_code: HARBOR
+status: draft
+provenance: Original practice material written for this course; not official exam questions.
+scope:
+  type: module
+  id: section-020-module-03
+  title: "From harbor.yml To Helm Values"
+placement:
+  position: after
+  reading: sections/section-020/module-03/course-05-summary.md
+questions:
+  - id: ats100-020-m03-q01
+    type: single_choice
+    difficulty: beginner
+    learning_objective: "Compare the installers"
+    source_readings:
+      - sections/section-020/module-03/course-01-two-ways-to-configure.md
+    prompt: "What does the Compose installer run after you edit `harbor.yml`?"
+    options:
+      - id: a
+        text: "`./prepare`, which renders the container configuration."
+        explanation: "Correct. Compose then starts the containers."
+      - id: b
+        text: "`helm upgrade`."
+        explanation: "Not correct. That is the chart."
+      - id: c
+        text: "`kubectl apply`."
+        explanation: "Not correct. That is Kubernetes."
+      - id: d
+        text: "Nothing; the file is read directly."
+        explanation: "Not correct. `prepare` renders the files."
+    correct_option: a
+    explanation: "Correct. Compose then starts the containers."
+
+  - id: ats100-020-m03-q02
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Understand unknown keys"
+    source_readings:
+      - sections/section-020/module-03/course-01-two-ways-to-configure.md
+    prompt: "What happens if you pass `harbor.yml` to Helm as a values file?"
+    options:
+      - id: a
+        text: "Helm converts the names."
+        explanation: "Not correct. It does not."
+      - id: b
+        text: "Most keys are ignored without an error, because the names differ."
+        explanation: "Correct. Helm does not reject unknown keys."
+      - id: c
+        text: "Helm refuses to run."
+        explanation: "Not correct. It runs."
+      - id: d
+        text: "Harbor reads `harbor.yml` itself."
+        explanation: "Not correct. The chart does not read it."
+    correct_option: b
+    explanation: "Correct. Helm does not reject unknown keys."
+
+  - id: ats100-020-m03-q03
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Map a setting"
+    source_readings:
+      - sections/section-020/module-03/course-02-mapping-settings.md
+    prompt: "Which chart value matches `log.level` of `harbor.yml`?"
+    options:
+      - id: a
+        text: "`log.level`"
+        explanation: "Not correct. That key does not exist in the chart."
+      - id: b
+        text: "`debug`"
+        explanation: "Not correct. That is a level, not a key."
+      - id: c
+        text: "`logLevel`"
+        explanation: "Correct. The chart uses camelCase."
+      - id: d
+        text: "`jobservice.logLevel`"
+        explanation: "Not correct. The log level is a top-level value."
+    correct_option: c
+    explanation: "Correct. The chart uses camelCase."
+
+  - id: ats100-020-m03-q04
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Map a setting"
+    source_readings:
+      - sections/section-020/module-03/course-02-mapping-settings.md
+    prompt: "Which chart value matches `jobservice.max_job_workers`?"
+    options:
+      - id: a
+        text: "`jobservice.max_job_workers`"
+        explanation: "Not correct. The chart does not use underscores."
+      - id: b
+        text: "`maxWorkers`"
+        explanation: "Not correct. The key stays in the `jobservice` group."
+      - id: c
+        text: "`trivy.workers`"
+        explanation: "Not correct. Trivy is another component."
+      - id: d
+        text: "`jobservice.maxJobWorkers`"
+        explanation: "Correct. Underscores become camelCase."
+    correct_option: d
+    explanation: "Correct. Underscores become camelCase."
+
+  - id: ats100-020-m03-q05
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Find a chart name"
+    source_readings:
+      - sections/section-020/module-03/course-02-mapping-settings.md
+    prompt: "How do you find the chart name of a setting you do not know?"
+    options:
+      - id: a
+        text: "Search `helm show values harbor/harbor --version <chart>` for the words."
+        explanation: "Correct. It lists every value."
+      - id: b
+        text: "Search `harbor.yml`."
+        explanation: "Not correct. It has the old names."
+      - id: c
+        text: "Run `helm list`."
+        explanation: "Not correct. That lists releases."
+      - id: d
+        text: "Ask the portal."
+        explanation: "Not correct. The portal shows no chart keys."
+    correct_option: a
+    explanation: "Correct. It lists every value."
+
+  - id: ats100-020-m03-q06
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Handle data_volume"
+    source_readings:
+      - sections/section-020/module-03/course-03-settings-that-change-meaning.md
+    prompt: "What replaces `data_volume` in the chart?"
+    options:
+      - id: a
+        text: "A `hostPath` value in `harbor.yml`."
+        explanation: "Not correct. The chart does not read it."
+      - id: b
+        text: "PersistentVolumeClaims through the `persistence` settings."
+        explanation: "Correct. Kubernetes decides where data sits."
+      - id: c
+        text: "The `externalURL`."
+        explanation: "Not correct. That is an address."
+      - id: d
+        text: "The Secret `harbor-tls`."
+        explanation: "Not correct. That holds the certificate."
+    correct_option: b
+    explanation: "Correct. Kubernetes decides where data sits."
+
+  - id: ats100-020-m03-q07
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Move certificates"
+    source_readings:
+      - sections/section-020/module-03/course-03-settings-that-change-meaning.md
+    prompt: "How do certificate files of `harbor.yml` reach the chart?"
+    options:
+      - id: a
+        text: "By setting `https.certificate` in the chart."
+        explanation: "Not correct. That key is not in the chart."
+      - id: b
+        text: "By copying the files into the pod."
+        explanation: "Not correct. Pods are replaced."
+      - id: c
+        text: "As a Kubernetes TLS Secret named in `expose.tls.secret.secretName`, with `certSource: secret`."
+        explanation: "Correct. The chart reads a Secret."
+      - id: d
+        text: "By setting `externalURL` only."
+        explanation: "Not correct. That does not carry a certificate."
+    correct_option: c
+    explanation: "Correct. The chart reads a Secret."
+
+  - id: ats100-020-m03-q08
+    type: single_choice
+    difficulty: advanced
+    learning_objective: "Protect the key"
+    source_readings:
+      - sections/section-020/module-03/course-03-settings-that-change-meaning.md
+    prompt: "Why must the old `secretKey` be used in the new installation?"
+    options:
+      - id: a
+        text: "It is the administrator password."
+        explanation: "Not correct. It is not."
+      - id: b
+        text: "It names the Helm release."
+        explanation: "Not correct. The release has its own name."
+      - id: c
+        text: "Harbor refuses to start without it."
+        explanation: "Not correct. It starts, but cannot decrypt."
+      - id: d
+        text: "Stored credentials in the copied database were encrypted with it."
+        explanation: "Correct. A different key cannot decrypt them."
+    correct_option: d
+    explanation: "Correct. A different key cannot decrypt them."
+
+  - id: ats100-020-m03-q09
+    type: single_choice
+    difficulty: advanced
+    learning_objective: "Order the migration"
+    source_readings:
+      - sections/section-020/module-03/course-04-moving-the-data.md
+    prompt: "Which order is correct?"
+    options:
+      - id: a
+        text: "Back up, install the same version with the same `secretKey`, restore, copy blobs, switch, check, upgrade."
+        explanation: "Correct. Migrate first, upgrade after."
+      - id: b
+        text: "Upgrade to the newest version, then restore."
+        explanation: "Not correct. The schema must match the dump."
+      - id: c
+        text: "Switch the address, then restore."
+        explanation: "Not correct. Clients would reach an empty Harbor."
+      - id: d
+        text: "Copy blobs, then back up."
+        explanation: "Not correct. A backup comes first."
+    correct_option: a
+    explanation: "Correct. Migrate first, upgrade after."
+
+  - id: ats100-020-m03-q10
+    type: single_choice
+    difficulty: advanced
+    learning_objective: "Verify the copy"
+    source_readings:
+      - sections/section-020/module-03/course-04-moving-the-data.md
+    prompt: "How do you prove an image was copied byte for byte?"
+    options:
+      - id: a
+        text: "Compare the tag names."
+        explanation: "Not correct. Tags can point at different content."
+      - id: b
+        text: "Compare its digest on the old and the new Harbor."
+        explanation: "Correct. The digest is a hash of the content."
+      - id: c
+        text: "Compare the sizes in the portal."
+        explanation: "Not correct. Sizes can match with different content."
+      - id: d
+        text: "Compare the push times."
+        explanation: "Not correct. Times differ by design."
+    correct_option: b
+    explanation: "Correct. The digest is a hash of the content."

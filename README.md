@@ -27,9 +27,9 @@ contains:
 
 | Section | Title | Modules | Labs | Topic |
 | --- | --- | --- | --- | --- |
-| [010](sections/section-010) | Harbor Architecture And OCI Artifacts | 2 | 2 + capstone | Architecture |
-| [020](sections/section-020) | Installing Harbor With Helm And TLS | 2 | 2 + capstone | Installation |
-| [030](sections/section-030) | The Harbor Command-Line Tool | 2 | 2 + capstone | Harbor CLI |
+| [010](sections/section-010) | Harbor Architecture And OCI Artifacts | 3 | 3 + capstone | Architecture |
+| [020](sections/section-020) | Installing Harbor With Helm And TLS | 4 | 4 + capstone | Installation |
+| [030](sections/section-030) | The Harbor Command-Line Tool | 3 | 3 + capstone | Harbor CLI |
 
 The order goes from a running Harbor to how it is installed, and then to the
 tool used every day. Section 010 takes a running Harbor apart, because every
@@ -43,12 +43,16 @@ external URL and the certificate. Section 030 ends with the `harbor` CLI.
 
 | Module | Reader | Parts | Labs |
 | --- | --- | --- | --- |
-| 010-01 | [Find Your Way Around A Running Harbor](sections/section-010/module-01/course.md) | 3 | [lab-01](sections/section-010/module-01/labs/lab-01) |
+| 010-01 | [Find Your Way Around A Running Harbor](sections/section-010/module-01/course.md) | 4 | [lab-01](sections/section-010/module-01/labs/lab-01) |
 | 010-02 | [The OCI Distribution Model: Manifests, Blobs, Indexes And Referrers](sections/section-010/module-02/course.md) | 4 | [lab-01](sections/section-010/module-02/labs/lab-01) |
-| 020-01 | [Install And Configure Harbor With harbor-helm](sections/section-020/module-01/course.md) | 3 | [lab-01](sections/section-020/module-01/labs/lab-01) |
+| 010-03 | [Where Harbor Keeps State: Storage, Logs And Backups](sections/section-010/module-03/course.md) | 4 | [lab-01](sections/section-010/module-03/labs/lab-01) |
+| 020-01 | [Install And Configure Harbor With harbor-helm](sections/section-020/module-01/course.md) | 4 | [lab-01](sections/section-020/module-01/labs/lab-01) |
+| 020-02 | [Exposure, Persistence And Secrets In The Harbor Chart](sections/section-020/module-02/course.md) | 4 | [lab-01](sections/section-020/module-02/labs/lab-01) |
+| 020-03 | [From harbor.yml To Helm Values](sections/section-020/module-03/course.md) | 4 | [lab-01](sections/section-020/module-03/labs/lab-01) |
 | 020-04 | [Upgrading, Rolling Back And Migrating Harbor](sections/section-020/module-04/course.md) | 4 | [lab-01](sections/section-020/module-04/labs/lab-01) |
-| 030-01 | [Work With Harbor From The Command Line](sections/section-030/module-01/course.md) | 3 | [lab-01](sections/section-030/module-01/labs/lab-01) |
+| 030-01 | [Work With Harbor From The Command Line](sections/section-030/module-01/course.md) | 4 | [lab-01](sections/section-030/module-01/labs/lab-01) |
 | 030-02 | [Manage Projects, Members And Artifacts With The Harbor CLI](sections/section-030/module-02/course.md) | 4 | [lab-01](sections/section-030/module-02/labs/lab-01) |
+| 030-03 | [Script The Harbor CLI](sections/section-030/module-03/course.md) | 4 | [lab-01](sections/section-030/module-03/labs/lab-01) |
 
 ---
 

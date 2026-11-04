@@ -4,7 +4,7 @@ A push to Harbor fails with an error that names no component. The pods in the na
 
 Harbor is a container registry: a server that stores container images and other artifacts and serves them over HTTP. Harbor adds projects, users, scanning and replication on top of a plain registry, and it does each of these jobs in a separate component. This module draws that map, then uses it.
 
-The module has three parts. **The Harbor Components And What They Do** names every component and finds it in the cluster. **Following A Push Through Harbor** sends one push through Harbor, step by step, and shows how the health API tells you which component is down; a graded lab follows it. **Images, Helm Charts And Other OCI Artifacts** stores a Helm chart and a plain file next to an image, and shows why a digest is the exact name of an artifact.
+The module has four parts. **The Harbor Components And What They Do** names every component and finds it in the cluster. **Following A Push Through Harbor** sends one push through Harbor, step by step, and shows how the health API tells you which component is down; a graded lab follows it. **Images, Helm Charts And Other OCI Artifacts** stores a Helm chart and a plain file next to an image, and shows why a digest is the exact name of an artifact. **How Clients Get A Token** follows the four requests of a login and a push and says what each error code means.
 
 ## Learning objectives
 
@@ -17,6 +17,7 @@ After this module you can:
 - Create a project with the Harbor REST API.
 - Copy an image and a Helm chart into Harbor with `regctl`, and push a file with `oras`.
 - Explain the difference between a tag and a digest, and compare two artifacts by digest.
+- Follow the four requests of a login and say what a `401` and a `403` mean at each step.
 
 ## Before you start
 

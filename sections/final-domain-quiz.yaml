@@ -631,3 +631,279 @@ questions:
         explanation: "Correct. Tags are names for a digest."
     correct_option: d
     explanation: "Correct. Tags are names for a digest."
+
+  - id: ats100-final-q28
+    type: single_choice
+    difficulty: beginner
+    learning_objective: "Name what the registry keeps"
+    source_readings:
+      - sections/section-010/module-03/course-01-what-each-component-keeps.md
+    prompt: "Where are the bytes of an image layer stored?"
+    options:
+      - id: a
+        text: "In the database."
+        explanation: "Not correct. The database keeps records."
+      - id: b
+        text: "In the registry storage, by default a volume."
+        explanation: "Correct. The registry keeps blobs."
+      - id: c
+        text: "In `redis`."
+        explanation: "Not correct. Redis keeps queues and caches."
+      - id: d
+        text: "In `core`."
+        explanation: "Not correct. `core` keeps nothing."
+    correct_option: b
+    explanation: "Correct. The registry keeps blobs."
+
+  - id: ats100-final-q29
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Predict a failure"
+    source_readings:
+      - sections/section-010/module-03/course-02-what-survives-a-restart.md
+    prompt: "What happens to sign-in when the database is stopped?"
+    options:
+      - id: a
+        text: "It fails, because `core` cannot read users without the database."
+        explanation: "Correct. `core` depends on the database."
+      - id: b
+        text: "It works from a cache."
+        explanation: "Not correct. Records are not cached for sign-in."
+      - id: c
+        text: "Only the portal page fails."
+        explanation: "Not correct. The API fails too."
+      - id: d
+        text: "It switches to `redis`."
+        explanation: "Not correct. Redis does not hold users."
+    correct_option: a
+    explanation: "Correct. `core` depends on the database."
+
+  - id: ats100-final-q30
+    type: single_choice
+    difficulty: advanced
+    learning_objective: "List a complete backup"
+    source_readings:
+      - sections/section-010/module-03/course-04-backing-up-harbor.md
+    prompt: "Which backup restores a working Harbor?"
+    options:
+      - id: a
+        text: "The database dump, the registry storage, the values file and the Secrets including `secretKey`."
+        explanation: "Correct. Each part is needed."
+      - id: b
+        text: "Only the database dump."
+        explanation: "Not correct. Blobs would be missing."
+      - id: c
+        text: "Only the registry storage."
+        explanation: "Not correct. Records would be missing."
+      - id: d
+        text: "Only the Helm chart."
+        explanation: "Not correct. The chart holds none of your data."
+    correct_option: a
+    explanation: "Correct. Each part is needed."
+
+  - id: ats100-final-q31
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Explain externalURL"
+    source_readings:
+      - sections/section-020/module-02/course-01-exposure-and-external-url.md
+    prompt: "What does `externalURL` control?"
+    options:
+      - id: a
+        text: "The size of the registry volume."
+        explanation: "Not correct. That is a persistence setting."
+      - id: b
+        text: "The address Harbor tells clients to use, including the token realm."
+        explanation: "Correct. The realm in `/v2/` comes from it."
+      - id: c
+        text: "The number of core replicas."
+        explanation: "Not correct. It sets no replicas."
+      - id: d
+        text: "The administrator password."
+        explanation: "Not correct. That is `harborAdminPassword`."
+    correct_option: b
+    explanation: "Correct. The realm in `/v2/` comes from it."
+
+  - id: ats100-final-q32
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Judge persistence"
+    source_readings:
+      - sections/section-020/module-02/course-02-persistence-and-storage.md
+    prompt: "What does `persistence.enabled: false` mean for a replaced database pod?"
+    options:
+      - id: a
+        text: "Its data is lost, because the pod uses temporary storage."
+        explanation: "Correct. No claim keeps the data."
+      - id: b
+        text: "The data moves to Redis."
+        explanation: "Not correct. Redis does not take over."
+      - id: c
+        text: "The data is kept in the Helm release."
+        explanation: "Not correct. Helm stores no data."
+      - id: d
+        text: "Nothing; the data is on the registry volume."
+        explanation: "Not correct. The database has its own storage."
+    correct_option: a
+    explanation: "Correct. No claim keeps the data."
+
+  - id: ats100-final-q33
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Apply a change"
+    source_readings:
+      - sections/section-020/module-02/course-04-changing-settings-safely.md
+    prompt: "Which command keeps your other values when you change `externalURL`?"
+    options:
+      - id: a
+        text: "`helm upgrade harbor harbor/harbor --reuse-values --set externalURL=...`"
+        explanation: "Correct. `--reuse-values` starts from the last values."
+      - id: b
+        text: "`helm upgrade harbor harbor/harbor --set externalURL=...`"
+        explanation: "Not correct. Chart defaults replace the rest."
+      - id: c
+        text: "`helm uninstall harbor`"
+        explanation: "Not correct. That removes the release."
+      - id: d
+        text: "`kubectl edit cm harbor-core`"
+        explanation: "Not correct. Helm overwrites it later."
+    correct_option: a
+    explanation: "Correct. `--reuse-values` starts from the last values."
+
+  - id: ats100-final-q34
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Understand unknown keys"
+    source_readings:
+      - sections/section-020/module-03/course-01-two-ways-to-configure.md
+    prompt: "What happens if you pass `harbor.yml` to Helm as a values file?"
+    options:
+      - id: a
+        text: "Helm converts the names."
+        explanation: "Not correct. It does not."
+      - id: b
+        text: "Most keys are ignored without an error, because the names differ."
+        explanation: "Correct. Helm does not reject unknown keys."
+      - id: c
+        text: "Helm refuses to run."
+        explanation: "Not correct. It runs."
+      - id: d
+        text: "Harbor reads `harbor.yml` itself."
+        explanation: "Not correct. The chart does not read it."
+    correct_option: b
+    explanation: "Correct. Helm does not reject unknown keys."
+
+  - id: ats100-final-q35
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Find a chart name"
+    source_readings:
+      - sections/section-020/module-03/course-02-mapping-settings.md
+    prompt: "How do you find the chart name of a setting you do not know?"
+    options:
+      - id: a
+        text: "Search `helm show values harbor/harbor --version <chart>` for the words."
+        explanation: "Correct. It lists every value."
+      - id: b
+        text: "Search `harbor.yml`."
+        explanation: "Not correct. It has the old names."
+      - id: c
+        text: "Run `helm list`."
+        explanation: "Not correct. That lists releases."
+      - id: d
+        text: "Ask the portal."
+        explanation: "Not correct. The portal shows no chart keys."
+    correct_option: a
+    explanation: "Correct. It lists every value."
+
+  - id: ats100-final-q36
+    type: single_choice
+    difficulty: advanced
+    learning_objective: "Order the migration"
+    source_readings:
+      - sections/section-020/module-03/course-04-moving-the-data.md
+    prompt: "Which order is correct?"
+    options:
+      - id: a
+        text: "Back up, install the same version with the same `secretKey`, restore, copy blobs, switch, check, upgrade."
+        explanation: "Correct. Migrate first, upgrade after."
+      - id: b
+        text: "Upgrade to the newest version, then restore."
+        explanation: "Not correct. The schema must match the dump."
+      - id: c
+        text: "Switch the address, then restore."
+        explanation: "Not correct. Clients would reach an empty Harbor."
+      - id: d
+        text: "Copy blobs, then back up."
+        explanation: "Not correct. A backup comes first."
+    correct_option: a
+    explanation: "Correct. Migrate first, upgrade after."
+
+  - id: ats100-final-q37
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Choose the output"
+    source_readings:
+      - sections/section-030/module-03/course-01-commands-that-never-ask.md
+    prompt: "Which flag gives output that a script can parse?"
+    options:
+      - id: a
+        text: "`-v`"
+        explanation: "Not correct. That prints more detail."
+      - id: b
+        text: "`-o json`"
+        explanation: "Correct. It prints JSON for `jq`."
+      - id: c
+        text: "`-c`"
+        explanation: "Not correct. That selects a config file."
+      - id: d
+        text: "`-l`"
+        explanation: "Not correct. That sets the log format."
+    correct_option: b
+    explanation: "Correct. It prints JSON for `jq`."
+
+  - id: ats100-final-q38
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Handle untagged artifacts"
+    source_readings:
+      - sections/section-030/module-03/course-02-loops-jq-bulk-changes.md
+    prompt: "Why use `.tags[]?` instead of `.tags[]` in `jq`?"
+    options:
+      - id: a
+        text: "To skip artifacts that have no tags without an error."
+        explanation: "Correct. A missing list would stop the loop."
+      - id: b
+        text: "To sort tags."
+        explanation: "Not correct. `?` does not sort."
+      - id: c
+        text: "To read only the first tag."
+        explanation: "Not correct. It reads all tags."
+      - id: d
+        text: "To hide the digest."
+        explanation: "Not correct. The digest is another field."
+    correct_option: a
+    explanation: "Correct. A missing list would stop the loop."
+
+  - id: ats100-final-q39
+    type: single_choice
+    difficulty: intermediate
+    learning_objective: "Hide the password"
+    source_readings:
+      - sections/section-030/module-03/course-03-signing-in-from-a-pipeline.md
+    prompt: "How do you pass the password to `harbor login` without it appearing in the command line?"
+    options:
+      - id: a
+        text: "With `--password-stdin` and a pipe from the secret."
+        explanation: "Correct. Standard input is not in the process list."
+      - id: b
+        text: "With `--password` in plain text."
+        explanation: "Not correct. It shows in history."
+      - id: c
+        text: "In the context name."
+        explanation: "Not correct. The name is not a secret."
+      - id: d
+        text: "In the URL."
+        explanation: "Not correct. URLs are logged."
+    correct_option: a
+    explanation: "Correct. Standard input is not in the process list."

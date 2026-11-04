@@ -17,7 +17,7 @@ You will see every component as a Kubernetes workload, follow one push from the 
 
 ## The learning path
 
-Work through the module in order. It has a landing page, three short parts, a graded lab right after the part it tests, and a summary. The landing page starts the module's playground, a cluster with a running Harbor where you can explore freely.
+Work through the module in order. It has a landing page, four short parts, a graded lab right after the part it tests, and a summary. The landing page starts the module's playground, a cluster with a running Harbor where you can explore freely.
 
 ### 1. Find Your Way Around A Running Harbor
 
@@ -26,11 +26,16 @@ The playground holds a fresh Harbor 2.15.4 and a workstation pod with the client
 1. The Harbor Components And What They Do
 2. Following A Push Through Harbor, followed by the lab **Find And Restart The Broken Harbor Components**
 3. Images, Helm Charts And Other OCI Artifacts
-4. Summary
+4. How Clients Get A Token
+5. Summary
 
 ### 2. The OCI Distribution Model: Manifests, Blobs, Indexes And Referrers
 
 This module has four parts, a graded lab after the part on referrers, and a summary. It opens manifests and blobs, image indexes and referrers, and the data model and API behind them. Its lab attaches release notes to an image without changing the tag. Work it after module 1.
+
+### 3. Where Harbor Keeps State: Storage, Logs And Backups
+
+This module has four parts, a graded lab after the part on restarts, and a summary. It maps which component keeps which data, stops components on purpose, reads logs and health, and makes a backup. Its lab restores a stopped database without touching its volume. Work it after module 2.
 
 ## Section capstone: Make Harbor Store Images And Charts Again
 

@@ -4,7 +4,7 @@ A command that worked yesterday now answers `401 Unauthorized`, or lists the pro
 
 The `harbor` CLI is the official command-line tool of the Harbor project. It calls the Harbor REST API v2.0, the same API the web portal uses, and it is still young: this course uses version **v0.0.27**, and its flags can change between versions. When in doubt, `harbor <command> --help` shows the flags of the version you run.
 
-The module has three parts. **Signing In And Where The CLI Keeps Credentials** signs the CLI in and opens its configuration file. **Contexts For More Than One Server Or User** saves several credentials and switches between them; a graded lab follows it. **Everyday Commands And Output Formats** lists projects, repositories and artifacts, and turns the output into JSON for scripts.
+The module has four parts. **Signing In And Where The CLI Keeps Credentials** signs the CLI in and opens its configuration file. **Contexts For More Than One Server Or User** saves several credentials and switches between them; a graded lab follows it. **Everyday Commands And Output Formats** lists projects, repositories and artifacts, and turns the output into JSON for scripts. **Troubleshooting The CLI** finds the cause of a failing command from the context and the status code.
 
 ## Learning objectives
 
@@ -16,6 +16,7 @@ After this module you can:
 - List, switch, read, change and remove credentials with `harbor context`, and sign out with `harbor logout`.
 - Use `harbor info`, `harbor health`, `harbor project list`, `harbor repo list` and `harbor artifact list`.
 - Get JSON, YAML or CSV output with `-o`, and filter it with `jq`.
+- Find the cause of a failing command from the context, `-v` and the status code.
 
 ## Before you start
 
