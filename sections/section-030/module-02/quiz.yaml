@@ -3,7 +3,7 @@ kind: question_bank
 id: ats100-030-m02
 course_id: ATS100
 exam_code: HARBOR
-status: draft
+status: alpha
 provenance: Original practice material written for this course; not official exam questions.
 scope:
   type: module

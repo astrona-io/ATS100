@@ -13,7 +13,7 @@
 training:
   id: ATS100
   title: "Harbor: Architecture, Installation & Harbor CLI Basics"
-  maturity: draft
+  maturity: alpha
   description: >
     Training material covering the Architecture, Installation & Harbor CLI
     Basics domain of the Harbor training path: the Harbor components and what
