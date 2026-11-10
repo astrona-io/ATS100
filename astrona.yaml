@@ -321,7 +321,7 @@ modules:
         difficulty: intermediate
         estimated_duration: 20m
         topic: installation
-        task_kind: configuration
+        task_kind: build
         tags: [harbor-helm, harbor-yml, values-yaml, migration]
         learning_goals:
           - Read an old harbor.yml and find the settings the release lacks
